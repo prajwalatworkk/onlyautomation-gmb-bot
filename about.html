@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About Us — onlyautomation.in</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+:root {
+  --bg: #07090F; --surface: #0D1220; --surface-2: #131D30;
+  --border: #1C2A42; --accent: #4F8EF7; --accent-dim: rgba(79,142,247,0.1);
+  --success: #10D99A; --text: #DCE9FF; --text-2: #6A82B0; --text-3: #344560;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px;
+  background: rgba(7,9,15,0.85); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(28,42,66,0.6);
+}
+.nav-brand { font-size: 15px; font-weight: 700; text-decoration: none; color: var(--text); }
+.nav-brand span { color: var(--accent); }
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-links a { text-decoration: none; color: var(--text-2); font-size: 14px; font-weight: 450; padding: 6px 14px; border-radius: 7px; transition: all 0.15s; }
+.nav-links a:hover { color: var(--text); background: var(--surface-2); }
+.nav-links a.active { color: var(--text); }
+.nav-cta { text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 8px 18px; border-radius: 8px; background: var(--accent); color: #fff; }
+
+.page { max-width: 720px; margin: 0 auto; padding: 120px 40px 80px; }
+.page-label { font-size: 11px; font-weight: 650; letter-spacing: 1.2px; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; }
+.page-title { font-size: clamp(28px, 5vw, 44px); font-weight: 800; letter-spacing: -1px; margin-bottom: 24px; }
+.lead { font-size: 18px; color: var(--text-2); line-height: 1.7; margin-bottom: 48px; border-left: 2px solid var(--accent); padding-left: 20px; }
+
+.story { display: flex; flex-direction: column; gap: 32px; margin-bottom: 64px; }
+.story-block h3 { font-size: 16px; font-weight: 650; margin-bottom: 10px; color: var(--text); }
+.story-block p { font-size: 14.5px; color: var(--text-2); line-height: 1.75; }
+
+.values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 64px; }
+.value-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.value-icon { font-size: 22px; margin-bottom: 10px; }
+.value-title { font-size: 14px; font-weight: 650; margin-bottom: 6px; }
+.value-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+.contact-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 32px; text-align: center;
+}
+.contact-box h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+.contact-box p { font-size: 14px; color: var(--text-2); margin-bottom: 24px; }
+.contact-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.contact-link {
+  display: inline-flex; align-items: center; gap: 7px;
+  text-decoration: none; font-size: 13.5px; font-weight: 550;
+  padding: 9px 18px; border-radius: 8px; transition: all 0.15s;
+}
+.contact-link.primary { background: var(--accent); color: #fff; }
+.contact-link.ghost { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border); }
+.contact-link:hover { opacity: 0.85; }
+
+footer {
+  padding: 32px 40px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 720px; margin: 0 auto; flex-wrap: wrap; gap: 12px;
+}
+.footer-brand { font-size: 13px; font-weight: 600; }
+.footer-brand span { color: var(--accent); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 13px; color: var(--text-3); text-decoration: none; }
+.footer-links a:hover { color: var(--text-2); }
+
+@media (max-width: 600px) {
+  nav { padding: 0 20px; }
+  .nav-cta { display: none; }
+  .page { padding: 100px 20px 60px; }
+  .values-grid { grid-template-columns: 1fr; }
+  footer { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">only<span>automation</span>.in</a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/tools">Tools</a>
+    <a href="/about" class="active">About Us</a>
+  </div>
+  <a href="/tools" class="nav-cta">Explore Tools →</a>
+</nav>
+
+<div class="page">
+  <div class="page-label">About Us</div>
+  <div class="page-title">Built for businesses that can't afford to stop.</div>
+
+  <p class="lead">onlyautomation.in is a suite of automation tools built for Indian small and medium businesses — helping them stay visible online without spending hours on social media.</p>
+
+  <div class="story">
+    <div class="story-block">
+      <h3>Why we built this</h3>
+      <p>Running a small business in India means wearing every hat — sales, operations, customer service, and somehow also digital marketing. Most SMB owners know they should be posting regularly on Google, Instagram, and WhatsApp — but they never have time to actually do it.</p>
+      <p style="margin-top:12px">We built onlyautomation.in to solve exactly that. Set your schedule once, and the bots handle everything — AI content, branded images, posting, logging. You just focus on your business.</p>
+    </div>
+    <div class="story-block">
+      <h3>Who it's for</h3>
+      <p>Small and medium businesses across India — local services, agencies, consultants, retail shops — anyone who needs a consistent online presence but doesn't have a full marketing team. If you have a Google Business Profile and want people to find you, LocalPulse is for you.</p>
+    </div>
+    <div class="story-block">
+      <h3>Who built it</h3>
+      <p>onlyautomation.in is built and maintained by <strong>Digital Hub 360</strong>, a digital marketing agency based in Bangalore. We manage Google Ads, Meta Ads, SEO, and lead generation for Indian businesses — and we built these tools to make our clients' lives easier. Now we're making them available to everyone.</p>
+    </div>
+  </div>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">🇮🇳</div>
+      <div class="value-title">Made for India</div>
+      <div class="value-desc">Built with Indian businesses in mind — local language, local context, local platforms.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🔒</div>
+      <div class="value-title">Your Data Stays Yours</div>
+      <div class="value-desc">Your account credentials never leave your device. We don't store passwords or access tokens.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">⚡</div>
+      <div class="value-title">Zero Manual Work</div>
+      <div class="value-desc">Once configured, every tool runs fully on autopilot. No daily logins, no manual posting.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">📈</div>
+      <div class="value-title">Results You Can See</div>
+      <div class="value-desc">Every post is logged with status, timestamp, and content — so you always know what went out.</div>
+    </div>
+  </div>
+
+  <div class="contact-box">
+    <h3>Want to know more?</h3>
+    <p>Reach out to the Digital Hub 360 team — we're happy to help set up the tools for your business.</p>
+    <div class="contact-links">
+      <a href="https://digitalhub360.in" target="_blank" class="contact-link primary">Visit digitalhub360.in →</a>
+      <a href="/tools" class="contact-link ghost">Explore Tools</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">only<span>automation</span>.in</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/tools">Tools</a>
+    <a href="/about">About Us</a>
+  </div>
+</footer>
+
+</body>
+</html>

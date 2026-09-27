@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LocalPulse — GMB Dashboard · onlyautomation.in</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #07090F;
+  --surface: #0D1220;
+  --surface-2: #131D30;
+  --surface-3: #192440;
+  --border: #1C2A42;
+  --border-2: #243350;
+  --accent: #4F8EF7;
+  --accent-dim: rgba(79,142,247,0.1);
+  --accent-glow: rgba(79,142,247,0.25);
+  --success: #10D99A;
+  --success-dim: rgba(16,217,154,0.1);
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --text: #DCE9FF;
+  --text-2: #6A82B0;
+  --text-3: #344560;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  height: 100%; overflow: hidden;
+}
+.brand {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: linear-gradient(135deg, #4F8EF7 0%, #9B5CF0 100%);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.brand-mark svg { width: 16px; height: 16px; }
+.brand-name { font-size: 12.5px; font-weight: 650; letter-spacing: -0.1px; color: var(--text); line-height: 1.2; }
+.brand-tld { color: var(--accent); }
+.nav-section { padding: 14px 10px 6px; flex-shrink: 0; }
+.nav-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.7px;
+  color: var(--text-3); text-transform: uppercase;
+  padding: 0 8px; margin-bottom: 4px; display: block;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 8px; border-radius: 7px; cursor: pointer;
+  color: var(--text-2); font-size: 13px; font-weight: 450;
+  transition: all 0.15s; text-decoration: none; margin-bottom: 1px;
+}
+.nav-item:hover { background: var(--surface-2); color: var(--text); }
+.nav-item.active { background: var(--accent-dim); color: var(--accent); }
+.nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-status { width: 6px; height: 6px; border-radius: 50%; margin-left: auto; flex-shrink: 0; }
+.nav-status.on { background: var(--success); }
+.nav-status.off { background: var(--text-3); }
+.nav-badge {
+  margin-left: auto; font-size: 10px; font-weight: 600;
+  color: var(--text-3); background: var(--surface-3);
+  border: 1px solid var(--border); padding: 1px 6px; border-radius: 10px;
+}
+.sidebar-fill { flex: 1; }
+.sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.footer-domain { font-size: 11px; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
+
+/* MAIN */
+.main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; height: 100%; }
+.topbar {
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; background: var(--surface);
+  position: sticky; top: 0; z-index: 10;
+}
+.topbar-left { display: flex; flex-direction: column; gap: 2px; }
+.topbar-title { font-size: 15px; font-weight: 650; letter-spacing: -0.3px; }
+.topbar-sub { font-size: 12px; color: var(--text-2); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.status-toggle {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 14px 6px 10px; border-radius: 20px;
+  font-size: 12.5px; font-weight: 550; cursor: pointer;
+  border: 1px solid; transition: all 0.2s; user-select: none;
+}
+.status-toggle.active { background: var(--success-dim); color: var(--success); border-color: rgba(16,217,154,0.25); }
+.status-toggle.paused { background: rgba(245,158,11,0.08); color: var(--warning); border-color: rgba(245,158,11,0.25); }
+.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.status-toggle.active .pulse-dot { animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+.content { padding: 24px 28px; flex: 1; }
+
+/* STATS */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.stat-label { font-size: 11px; font-weight: 550; letter-spacing: 0.4px; color: var(--text-3); text-transform: uppercase; margin-bottom: 8px; }
+.stat-value { font-size: 24px; font-weight: 700; letter-spacing: -0.8px; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; }
+.stat-sub { font-size: 11.5px; color: var(--text-2); margin-top: 5px; }
+.stat-value.accent { color: var(--accent); }
+.stat-value.success { color: var(--success); }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
+.card-head {
+  padding: 16px 20px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-size: 13.5px; font-weight: 600; color: var(--text); }
+.card-hint { font-size: 12px; color: var(--text-2); }
+.card-body { padding: 18px 20px; }
+
+/* DAY PICKER */
+.day-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.day-btn {
+  width: 42px; height: 42px; border-radius: 9px;
+  border: 1.5px solid var(--border); background: var(--surface-2);
+  color: var(--text-2); font-size: 11px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.day-btn:hover { border-color: var(--accent); color: var(--accent); }
+.day-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 0 3px var(--accent-glow); }
+
+/* FORM ROWS */
+.form-rows { display: flex; flex-direction: column; }
+.form-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 0; border-bottom: 1px solid var(--border); gap: 16px;
+}
+.form-row:last-child { border-bottom: none; padding-bottom: 0; }
+.form-row:first-child { padding-top: 0; }
+.form-info { flex: 1; }
+.form-label { font-size: 13.5px; color: var(--text); font-weight: 450; }
+.form-desc { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.select-ctrl {
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  border-radius: 7px; color: var(--text); font-size: 13px;
+  font-family: 'Inter', sans-serif; padding: 7px 28px 7px 10px;
+  outline: none; cursor: pointer; transition: border-color 0.15s;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%236A82B0' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  min-width: 130px;
+}
+.select-ctrl:focus { border-color: var(--accent); }
+input[type="time"].select-ctrl { min-width: 110px; }
+input[type="text"].select-ctrl { min-width: 200px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+/* TOGGLE */
+.tog { position: relative; width: 42px; height: 24px; cursor: pointer; display: block; flex-shrink: 0; }
+.tog input { opacity: 0; width: 0; height: 0; position: absolute; }
+.tog-track {
+  position: absolute; inset: 0; background: var(--surface-3);
+  border-radius: 12px; border: 1px solid var(--border-2); transition: background 0.2s, border-color 0.2s;
+}
+.tog input:checked + .tog-track { background: var(--accent); border-color: var(--accent); }
+.tog-thumb {
+  position: absolute; top: 4px; left: 4px; width: 16px; height: 16px;
+  background: var(--text-2); border-radius: 50%; transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+.tog input:checked ~ .tog-thumb { transform: translateX(18px); background: #fff; }
+
+/* TOPICS */
+.topics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.topic-chip {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 13px; background: var(--surface-2);
+  border: 1.5px solid var(--border); border-radius: 9px;
+  cursor: pointer; transition: all 0.15s; user-select: none;
+}
+.topic-chip:hover { border-color: var(--accent); }
+.topic-chip.on { border-color: var(--accent); background: var(--accent-dim); }
+.topic-check {
+  width: 17px; height: 17px; border-radius: 4px;
+  border: 1.5px solid var(--border-2); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; transition: all 0.15s; color: transparent;
+}
+.topic-chip.on .topic-check { background: var(--accent); border-color: var(--accent); color: #fff; }
+.topic-text { font-size: 13px; color: var(--text); }
+.topic-em { font-size: 14px; }
+
+/* LOG */
+.log-list { display: flex; flex-direction: column; }
+.log-item { display: flex; align-items: flex-start; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.log-item:last-child { border-bottom: none; padding-bottom: 0; }
+.log-item:first-child { padding-top: 0; }
+.log-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.log-dot.s { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.log-dot.w { background: var(--warning); }
+.log-dot.i { background: var(--accent); }
+.log-body { flex: 1; }
+.log-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+.log-meta { font-size: 11.5px; color: var(--text-3); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+/* SAVE BAR */
+.save-bar {
+  position: sticky; bottom: 0;
+  padding: 16px 28px 20px;
+  background: linear-gradient(to top, var(--bg) 60%, transparent);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.btn { padding: 9px 22px; border-radius: 8px; font-size: 13.5px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; border: none; transition: all 0.15s; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #6BA3F9; box-shadow: 0 0 20px var(--accent-glow); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-2); }
+.btn-ghost:hover { color: var(--text); border-color: var(--text-3); }
+.save-hint { font-size: 12px; color: var(--text-3); }
+.toast {
+  margin-left: auto; padding: 8px 14px;
+  border-radius: 7px; font-size: 12.5px; font-weight: 550; display: none;
+}
+.toast.ok { background: var(--success-dim); color: var(--success); border: 1px solid rgba(16,217,154,0.2); }
+.toast.err { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+
+/* LOADING OVERLAY */
+.loading {
+  position: fixed; inset: 0; background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 12px;
+}
+.spinner {
+  width: 32px; height: 32px;
+  border: 2px solid var(--border-2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 12px; color: var(--text-3); }
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  html, body { overflow: auto; }
+  body { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+  .nav-section, .sidebar-footer, .sidebar-fill { display: none; }
+  .brand { padding: 12px 16px; }
+  .main { height: auto; overflow: auto; }
+  .topbar { position: relative; padding: 14px 16px; }
+  .content { padding: 14px 16px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .topics-grid { grid-template-columns: 1fr; }
+  .save-bar { position: relative; padding: 14px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">Loading settings…</div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">only<span class="brand-tld">automation</span>.in</div>
+    </div>
+  </div>
+  <div class="nav-section">
+    <span class="nav-label">Active Bots</span>
+    <a class="nav-item active" href="#">
+      <span class="nav-icon">📍</span>
+      GMB Poster
+      <span class="nav-status on" id="sidebarStatus"></span>
+    </a>
+    <a class="nav-item" href="#" style="opacity:.45;pointer-events:none">
+      <span class="nav-icon">📸</span>
+      Instagram Bot
+      <span class="nav-badge">Soon</span>
+    </a>
+    <a class="nav-item" href="#" style="opacity:.45;pointer-events:none">
+      <span class="nav-icon">💬</span>
+      WhatsApp Bot
+      <span class="nav-badge">Soon</span>
+    </a>
+  </div>
+  <div class="nav-section">
+    <span class="nav-label">System</span>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">📋</span>
+      Activity Logs
+    </a>
+  </div>
+  <div class="sidebar-fill"></div>
+  <div class="sidebar-footer">
+    <div class="footer-domain">onlyautomation.in</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">GMB Poster — Digital Hub 360</div>
+      <div class="topbar-sub">Google Business Profile auto-posting bot</div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-toggle active" id="statusToggle" onclick="toggleStatus()">
+        <div class="pulse-dot"></div>
+        <span id="statusLabel">Active</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Posts This Month</div>
+        <div class="stat-value accent">3</div>
+        <div class="stat-sub" id="statMonth">Sep 2026</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Next Post</div>
+        <div class="stat-value" id="statNextDay">Tue</div>
+        <div class="stat-sub" id="statNextTime">10:00 AM</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Published</div>
+        <div class="stat-value success">3</div>
+        <div class="stat-sub">All approved ✓</div>
+      </div>
+    </div>
+
+    <!-- Schedule -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Posting Schedule</div>
+        <div class="card-hint">Pick days + time</div>
+      </div>
+      <div class="card-body">
+        <div class="day-row" id="dayRow">
+          <button class="day-btn" data-day="Mon" onclick="toggleDay(this)">Mon</button>
+          <button class="day-btn on" data-day="Tue" onclick="toggleDay(this)">Tue</button>
+          <button class="day-btn" data-day="Wed" onclick="toggleDay(this)">Wed</button>
+          <button class="day-btn" data-day="Thu" onclick="toggleDay(this)">Thu</button>
+          <button class="day-btn on" data-day="Fri" onclick="toggleDay(this)">Fri</button>
+          <button class="day-btn" data-day="Sat" onclick="toggleDay(this)">Sat</button>
+          <button class="day-btn" data-day="Sun" onclick="toggleDay(this)">Sun</button>
+        </div>
+        <div class="form-rows">
+          <div class="form-row">
+            <div class="form-info">
+              <div class="form-label">Posting Time</div>
+              <div class="form-desc">Bot posts at this time on selected days</div>
+            </div>
+            <input type="time" class="select-ctrl" id="postTime" value="10:00" onchange="updateNext()">
+          </div>
+          <div class="form-row">
+            <div class="form-info">
+              <div class="form-label">Posts Per Week</div>
+              <div class="form-desc">Max posts (won't exceed selected days)</div>
+            </div>
+            <select class="select-ctrl" id="postsPerWeek">
+              <option value="1">1 per week</option>
+              <option value="2" selected>2 per week</option>
+              <option value="3">3 per week</option>
+              <option value="5">5 per week</option>
+              <option value="7">Daily</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Topics -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Post Topics</div>
+        <div class="card-hint">Bot rotates through selected topics</div>
+      </div>
+      <div class="card-body">
+        <div class="topics-grid">
+          <label class="topic-chip on" onclick="toggleTopic(this)">
+            <div class="topic-check">✓</div><span class="topic-em">🎯</span>
+            <span class="topic-text">Google Ads Tips</span>
+          </label>
+          <label class="topic-chip on" onclick="toggleTopic(this)">
+            <div class="topic-check">✓</div><span class="topic-em">📈</span>
+            <span class="topic-text">Lead Generation</span>
+          </label>
+          <label class="topic-chip on" onclick="toggleTopic(this)">
+            <div class="topic-check">✓</div><span class="topic-em">🌐</span>
+            <span class="topic-text">Website Design</span>
+          </label>
+          <label class="topic-chip on" onclick="toggleTopic(this)">
+            <div class="topic-check">✓</div><span class="topic-em">🔍</span>
+            <span class="topic-text">Local SEO</span>
+          </label>
+          <label class="topic-chip on" onclick="toggleTopic(this)">
+            <div class="topic-check">✓</div><span class="topic-em">📱</span>
+            <span class="topic-text">Social Media</span>
+          </label>
+          <label class="topic-chip" onclick="toggleTopic(this)">
+            <div class="topic-check"></div><span class="topic-em">🎉</span>
+            <span class="topic-text">Festive Offers</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Automation -->
+    <div class="card">
+      <div class="card-head"><div class="card-title">Automation Settings</div></div>
+      <div class="card-body">
+        <div class="form-rows">
+          <div class="form-row">
+            <div class="form-info">
+              <div class="form-label">Auto-Post (No Approval)</div>
+              <div class="form-desc">Bot posts automatically without asking you first</div>
+            </div>
+            <label class="tog"><input type="checkbox" id="autoPost" checked><div class="tog-track"></div><div class="tog-thumb"></div></label>
+          </div>
+          <div class="form-row">
+            <div class="form-info">
+              <div class="form-label">WhatsApp Preview First</div>
+              <div class="form-desc">Send draft to WhatsApp for approval before posting</div>
+            </div>
+            <label class="tog"><input type="checkbox" id="whatsappApproval"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+          </div>
+          <div class="form-row">
+            <div class="form-info">
+              <div class="form-label">Include Branded Image</div>
+              <div class="form-desc">DH360 creative generated for every post</div>
+            </div>
+            <label class="tog"><input type="checkbox" id="includeImage" checked><div class="tog-track"></div><div class="tog-thumb"></div></label>
+          </div>
+          <div class="form-row">
+            <div class="form-info">
+              <div class="form-label">Add "Learn More" Button</div>
+              <div class="form-desc">Links to your website on every post</div>
+            </div>
+            <label class="tog"><input type="checkbox" id="learnMore" checked><div class="tog-track"></div><div class="tog-thumb"></div></label>
+          </div>
+          <div class="form-row">
+            <div class="form-info">
+              <div class="form-label">Website URL</div>
+              <div class="form-desc">Used in the Learn More button</div>
+            </div>
+            <input type="text" class="select-ctrl" id="websiteUrl" value="https://digitalhub360.in">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Recent Activity</div>
+        <div class="card-hint">Last 5 posts</div>
+      </div>
+      <div class="card-body">
+        <div class="log-list">
+          <div class="log-item">
+            <div class="log-dot s"></div>
+            <div class="log-body">
+              <div class="log-text">Published — "Improving Your Local Search Visibility Online"</div>
+              <div class="log-meta">2026-09-27 · 18:17 · Image ✓ · Learn More ✓</div>
+            </div>
+          </div>
+          <div class="log-item">
+            <div class="log-dot s"></div>
+            <div class="log-body">
+              <div class="log-text">Published — "Maximizing Google Ads for Indian SMBs"</div>
+              <div class="log-meta">2026-09-26 · 18:14 · Image ✓ · Learn More ✓</div>
+            </div>
+          </div>
+          <div class="log-item">
+            <div class="log-dot s"></div>
+            <div class="log-body">
+              <div class="log-text">Published — "Driving Quality Leads for Local Businesses"</div>
+              <div class="log-meta">2026-09-26 · 18:06 · Image ✓ · Learn More ✓</div>
+            </div>
+          </div>
+          <div class="log-item">
+            <div class="log-dot i"></div>
+            <div class="log-body">
+              <div class="log-text">Bot configured and activated</div>
+              <div class="log-meta">2026-09-26 · 17:42</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <div class="save-bar">
+    <button class="btn btn-primary" id="saveBtn" onclick="saveSettings()">Save &amp; Apply</button>
+    <button class="btn btn-ghost" onclick="resetSettings()">Reset</button>
+    <span class="save-hint">Changes apply to next scheduled post</span>
+    <div class="toast" id="toast"></div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+let isActive = true;
+let currentSha = null;
+
+// ── Helpers ──
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3500);
+}
+
+function toggleStatus() {
+  isActive = !isActive;
+  const el = document.getElementById('statusToggle');
+  const label = document.getElementById('statusLabel');
+  const dot = document.getElementById('sidebarStatus');
+  if (isActive) {
+    el.className = 'status-toggle active'; label.textContent = 'Active';
+    dot.className = 'nav-status on';
+  } else {
+    el.className = 'status-toggle paused'; label.textContent = 'Paused';
+    dot.className = 'nav-status off';
+  }
+}
+
+function toggleDay(btn) { btn.classList.toggle('on'); updateNext(); }
+
+function toggleTopic(chip) {
+  chip.classList.toggle('on');
+  chip.querySelector('.topic-check').textContent = chip.classList.contains('on') ? '✓' : '';
+}
+
+function updateNext() {
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const sel = [...document.querySelectorAll('.day-btn.on')].map(b => b.dataset.day);
+  if (!sel.length) { document.getElementById('statNextDay').textContent = '—'; document.getElementById('statNextTime').textContent = 'No days set'; return; }
+  const time = document.getElementById('postTime').value || '10:00';
+  const [h, m] = time.split(':').map(Number);
+  const now = new Date();
+  const todayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1;
+  for (let off = 0; off < 7; off++) {
+    const dayName = days[(todayIdx + off) % 7];
+    if (sel.includes(dayName)) {
+      if (off === 0) {
+        const pt = new Date(); pt.setHours(h, m, 0);
+        if (pt > now) { document.getElementById('statNextDay').textContent = 'Today'; document.getElementById('statNextTime').textContent = fmt(time); return; }
+      } else {
+        document.getElementById('statNextDay').textContent = dayName;
+        document.getElementById('statNextTime').textContent = fmt(time);
+        return;
+      }
+    }
+  }
+  document.getElementById('statNextDay').textContent = sel[0];
+  document.getElementById('statNextTime').textContent = fmt(time);
+}
+
+function fmt(t) {
+  const [h, m] = t.split(':').map(Number);
+  return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${h >= 12 ? 'PM' : 'AM'}`;
+}
+
+// ── Apply config to UI ──
+function applyConfig(cfg) {
+  isActive = cfg.active !== false;
+  if (!isActive) { document.getElementById('statusToggle').className = 'status-toggle paused'; document.getElementById('statusLabel').textContent = 'Paused'; document.getElementById('sidebarStatus').className = 'nav-status off'; }
+  if (cfg.days) document.querySelectorAll('.day-btn').forEach(b => b.classList.toggle('on', cfg.days.includes(b.dataset.day)));
+  if (cfg.time) document.getElementById('postTime').value = cfg.time;
+  if (cfg.postsPerWeek) document.getElementById('postsPerWeek').value = String(cfg.postsPerWeek);
+  if (cfg.topics) {
+    document.querySelectorAll('.topic-chip').forEach(c => {
+      const on = cfg.topics.includes(c.querySelector('.topic-text').textContent);
+      c.classList.toggle('on', on);
+      c.querySelector('.topic-check').textContent = on ? '✓' : '';
+    });
+  }
+  if (cfg.autoPost !== undefined) document.getElementById('autoPost').checked = cfg.autoPost;
+  if (cfg.whatsappApproval !== undefined) document.getElementById('whatsappApproval').checked = cfg.whatsappApproval;
+  if (cfg.includeImage !== undefined) document.getElementById('includeImage').checked = cfg.includeImage;
+  if (cfg.learnMore !== undefined) document.getElementById('learnMore').checked = cfg.learnMore;
+  if (cfg.websiteUrl) document.getElementById('websiteUrl').value = cfg.websiteUrl;
+  currentSha = cfg._sha || null;
+  updateNext();
+}
+
+// ── Load settings ──
+async function loadSettings() {
+  try {
+    const r = await fetch('/api/config');
+    if (r.ok) { const cfg = await r.json(); applyConfig(cfg); }
+  } catch (e) {
+    // API not available in local preview — that's fine
+  }
+  document.getElementById('loading').style.display = 'none';
+  updateNext();
+}
+
+// ── Save settings ──
+async function saveSettings() {
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const config = {
+    active: isActive,
+    days: [...document.querySelectorAll('.day-btn.on')].map(b => b.dataset.day),
+    time: document.getElementById('postTime').value,
+    postsPerWeek: parseInt(document.getElementById('postsPerWeek').value),
+    topics: [...document.querySelectorAll('.topic-chip.on')].map(c => c.querySelector('.topic-text').textContent),
+    autoPost: document.getElementById('autoPost').checked,
+    whatsappApproval: document.getElementById('whatsappApproval').checked,
+    includeImage: document.getElementById('includeImage').checked,
+    learnMore: document.getElementById('learnMore').checked,
+    websiteUrl: document.getElementById('websiteUrl').value.trim(),
+    _sha: currentSha,
+  };
+  try {
+    const r = await fetch('/api/config', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(config) });
+    const data = await r.json();
+    if (r.ok && data.ok) {
+      showToast('✓ Settings saved — config updated on GitHub', 'ok');
+      // Refresh sha
+      const r2 = await fetch('/api/config');
+      if (r2.ok) { const cfg = await r2.json(); currentSha = cfg._sha || null; }
+    } else {
+      showToast('✗ ' + (data.error || 'Save failed'), 'err');
+    }
+  } catch (e) {
+    showToast('✗ Could not reach API', 'err');
+  }
+  btn.disabled = false; btn.textContent = 'Save & Apply';
+}
+
+function resetSettings() {
+  applyConfig({
+    active: true, days: ['Tue','Fri'], time: '10:00', postsPerWeek: 2,
+    topics: ['Google Ads Tips','Lead Generation','Website Design','Local SEO','Social Media'],
+    autoPost: true, whatsappApproval: false, includeImage: true, learnMore: true,
+    websiteUrl: 'https://digitalhub360.in'
+  });
+}
+
+loadSettings();
+</script>
+</body>
+</html>
