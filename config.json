@@ -1,0 +1,13 @@
+{
+  "active": true,
+  "days": ["Tue", "Fri"],
+  "time": "10:00",
+  "postsPerWeek": 2,
+  "topics": ["Google Ads Tips", "Lead Generation", "Website Design", "Local SEO", "Social Media"],
+  "autoPost": true,
+  "whatsappApproval": false,
+  "includeImage": true,
+  "learnMore": true,
+  "websiteUrl": "https://digitalhub360.in",
+  "updatedAt": null
+}
