@@ -734,7 +734,7 @@ async function saveSettings() {
     const r = await fetch('/api/config', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(config) });
     const data = await r.json();
     if (r.ok && data.ok) {
-      showToast('✓ Settings saved — config updated on GitHub', 'ok');
+      showToast('✓ Saved! Bot will follow new settings on next run.', 'ok');
       const r2 = await fetch('/api/config');
       if (r2.ok) { const cfg = await r2.json(); currentSha = cfg._sha || null; }
     } else {
