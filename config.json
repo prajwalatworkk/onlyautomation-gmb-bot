@@ -1,13 +1,36 @@
 {
   "active": true,
-  "days": ["Tue", "Fri"],
+  "days": [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+  ],
   "time": "10:00",
-  "postsPerWeek": 2,
-  "topics": ["Google Ads Tips", "Lead Generation", "Website Design", "Local SEO", "Social Media"],
+  "postsPerWeek": 7,
+  "topics": [
+    "Google Ads Tips",
+    "Lead Generation",
+    "Website Design",
+    "Local SEO",
+    "Social Media",
+    "Festive Offers"
+  ],
   "autoPost": true,
-  "whatsappApproval": false,
+  "whatsappApproval": true,
   "includeImage": true,
   "learnMore": true,
   "websiteUrl": "https://digitalhub360.in",
-  "updatedAt": null
+  "businesses": [
+    {
+      "id": "dh360",
+      "name": "Digital Hub 360",
+      "websiteUrl": "https://digitalhub360.in"
+    }
+  ],
+  "activeBusiness": "dh360",
+  "updatedAt": "2026-09-28T06:35:59.297Z"
 }
