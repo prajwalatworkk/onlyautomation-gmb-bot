@@ -28,6 +28,7 @@ module.exports = async function handler(req, res) {
 
   // GET — return current config
   if (req.method === 'GET') {
+    if (!GITHUB_TOKEN || !GITHUB_REPO) return res.status(200).json(DEFAULT_CONFIG);
     try {
       const r = await fetch(
         `https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`,
@@ -44,6 +45,9 @@ module.exports = async function handler(req, res) {
 
   // POST — save config to GitHub
   if (req.method === 'POST') {
+    if (!GITHUB_TOKEN || !GITHUB_REPO) {
+      return res.status(500).json({ error: 'Setup needed: add GITHUB_TOKEN + GITHUB_REPO in Vercel → Settings → Environment Variables, then redeploy.' });
+    }
     try {
       const config = { ...req.body };
       const sha = config._sha;
