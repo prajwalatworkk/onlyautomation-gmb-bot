@@ -2,35 +2,29 @@
   "active": true,
   "days": [
     "Mon",
-    "Tue",
     "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
     "Sun"
   ],
-  "time": "10:00",
-  "postsPerWeek": 7,
-  "topics": [
-    "Google Ads Tips",
-    "Lead Generation",
-    "Website Design",
-    "Local SEO",
-    "Social Media",
-    "Festive Offers"
-  ],
+  "time": "17:45",
+  "postsPerWeek": 3,
+  "topics": [],
   "autoPost": true,
-  "whatsappApproval": true,
+  "whatsappApproval": false,
   "includeImage": true,
   "learnMore": true,
-  "websiteUrl": "https://digitalhub360.in",
+  "websiteUrl": "https://www.xcellentchairs.com/",
   "businesses": [
     {
       "id": "dh360",
       "name": "Digital Hub 360",
       "websiteUrl": "https://digitalhub360.in"
+    },
+    {
+      "id": "biz_1790597105873",
+      "name": "Xcellent Seating Systems",
+      "websiteUrl": "https://www.xcellentchairs.com/"
     }
   ],
-  "activeBusiness": "dh360",
-  "updatedAt": "2026-09-28T06:35:59.297Z"
+  "activeBusiness": "biz_1790597105873",
+  "updatedAt": "2026-09-28T12:05:48.555Z"
 }
