@@ -52,6 +52,10 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 .add-biz-btn { display: flex; align-items: center; gap: 7px; padding: 7px 8px; border-radius: 7px; cursor: pointer; color: var(--text-3); font-size: 12px; font-weight: 500; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; margin-top: 2px; }
 .add-biz-btn:hover { color: var(--accent); background: var(--accent-dim); }
 
+/* ADD TOPIC BUTTON */
+.add-topic-btn { margin-top: 10px; padding: 7px 14px; border-radius: 7px; background: var(--surface-2); border: 1px dashed var(--border-2); color: var(--text-3); font-size: 12px; font-weight: 500; cursor: pointer; width: 100%; font-family: 'Inter', sans-serif; transition: all 0.15s; text-align: left; }
+.add-topic-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+
 .sidebar-fill { flex: 1; }
 .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
 .footer-domain { font-size: 11px; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
@@ -235,6 +239,19 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
         <label class="field-label">Website URL *</label>
         <input class="field-input" id="newBizUrl" type="url" placeholder="https://example.com">
       </div>
+      <div class="field-group">
+        <label class="field-label">Business Category — sets post topics automatically</label>
+        <select class="field-input" id="newBizCategory">
+          <option value="Digital Marketing">Digital Marketing Agency</option>
+          <option value="Dental Clinic">Dental Clinic</option>
+          <option value="Restaurant / Café">Restaurant / Café</option>
+          <option value="Salon & Spa">Salon & Spa</option>
+          <option value="Gym / Fitness">Gym / Fitness</option>
+          <option value="Real Estate">Real Estate</option>
+          <option value="Medical Clinic">Medical Clinic</option>
+          <option value="Education / Coaching">Education / Coaching</option>
+        </select>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-primary" onclick="confirmAddBusiness()">Add Business</button>
@@ -384,32 +401,10 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
         <div class="card-hint">Bot rotates through selected topics</div>
       </div>
       <div class="card-body">
-        <div class="topics-grid">
-          <label class="topic-chip on" onclick="toggleTopic(this)">
-            <div class="topic-check">✓</div><span class="topic-em">🎯</span>
-            <span class="topic-text">Google Ads Tips</span>
-          </label>
-          <label class="topic-chip on" onclick="toggleTopic(this)">
-            <div class="topic-check">✓</div><span class="topic-em">📈</span>
-            <span class="topic-text">Lead Generation</span>
-          </label>
-          <label class="topic-chip on" onclick="toggleTopic(this)">
-            <div class="topic-check">✓</div><span class="topic-em">🌐</span>
-            <span class="topic-text">Website Design</span>
-          </label>
-          <label class="topic-chip on" onclick="toggleTopic(this)">
-            <div class="topic-check">✓</div><span class="topic-em">🔍</span>
-            <span class="topic-text">Local SEO</span>
-          </label>
-          <label class="topic-chip on" onclick="toggleTopic(this)">
-            <div class="topic-check">✓</div><span class="topic-em">📱</span>
-            <span class="topic-text">Social Media</span>
-          </label>
-          <label class="topic-chip" onclick="toggleTopic(this)">
-            <div class="topic-check"></div><span class="topic-em">🎉</span>
-            <span class="topic-text">Festive Offers</span>
-          </label>
+        <div class="topics-grid" id="topicsGrid">
+          <!-- rendered per-business by JS -->
         </div>
+        <button class="add-topic-btn" onclick="addCustomTopic()">+ Add custom topic</button>
       </div>
     </div>
 
@@ -509,11 +504,59 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
 </div><!-- /main -->
 
 <script>
+// ── Topic presets per business category ──
+const TOPIC_PRESETS = {
+  'Digital Marketing': [
+    {em:'🎯',text:'Google Ads Tips'},{em:'📈',text:'Lead Generation'},
+    {em:'🌐',text:'Website Design'},{em:'🔍',text:'Local SEO'},
+    {em:'📱',text:'Social Media'},{em:'🎉',text:'Festive Offers'},
+  ],
+  'Dental Clinic': [
+    {em:'🦷',text:'Dental Care Tips'},{em:'😁',text:'Teeth Whitening'},
+    {em:'👶',text:'Kids Dentistry'},{em:'🦴',text:'Implants & Braces'},
+    {em:'⭐',text:'Patient Stories'},{em:'🎉',text:'Special Offers'},
+  ],
+  'Restaurant / Café': [
+    {em:'🍽️',text:'Daily Specials'},{em:'👨‍🍳',text:'Chef Highlights'},
+    {em:'⭐',text:'Customer Reviews'},{em:'🎉',text:'Festive Menu'},
+    {em:'🍕',text:'New Dishes'},{em:'🕐',text:'Opening Hours'},
+  ],
+  'Salon & Spa': [
+    {em:'💇',text:'Hair Tips'},{em:'💅',text:'Nail Art & Trends'},
+    {em:'🧖',text:'Skin Care'},{em:'🎉',text:'Special Packages'},
+    {em:'⭐',text:'Client Transformations'},{em:'🌿',text:'Organic Products'},
+  ],
+  'Gym / Fitness': [
+    {em:'💪',text:'Workout Tips'},{em:'🥗',text:'Nutrition Advice'},
+    {em:'🏆',text:'Member Success Stories'},{em:'🧘',text:'Yoga & Wellness'},
+    {em:'🎉',text:'Membership Offers'},{em:'📅',text:'Classes & Schedule'},
+  ],
+  'Real Estate': [
+    {em:'🏠',text:'Property Listings'},{em:'📍',text:'Locality Highlights'},
+    {em:'💰',text:'Investment Tips'},{em:'🔑',text:'Buying Guide'},
+    {em:'⭐',text:'Client Testimonials'},{em:'📈',text:'Market Updates'},
+  ],
+  'Medical Clinic': [
+    {em:'🏥',text:'Health Tips'},{em:'💊',text:'Treatment Info'},
+    {em:'⭐',text:'Patient Stories'},{em:'📅',text:'Consultation Hours'},
+    {em:'🔬',text:'New Treatments'},{em:'🎉',text:'Health Camps'},
+  ],
+  'Education / Coaching': [
+    {em:'📚',text:'Study Tips'},{em:'🎓',text:'Student Success'},
+    {em:'📅',text:'Batch Schedule'},{em:'✍️',text:'Exam Preparation'},
+    {em:'🏆',text:'Top Results'},{em:'🎉',text:'Admissions Open'},
+  ],
+};
+
 // ── State ──
 let isActive = true;
 let currentSha = null;
 let businesses = [
-  { id: 'dh360', name: 'Digital Hub 360', websiteUrl: 'https://digitalhub360.in' }
+  {
+    id: 'dh360', name: 'Digital Hub 360', websiteUrl: 'https://digitalhub360.in',
+    category: 'Digital Marketing',
+    topics: TOPIC_PRESETS['Digital Marketing'].map(t => ({...t}))
+  }
 ];
 let activeBizId = 'dh360';
 
@@ -561,6 +604,39 @@ function editSchedule() {
 function toggleTopic(chip) {
   chip.classList.toggle('on');
   chip.querySelector('.topic-check').textContent = chip.classList.contains('on') ? '✓' : '';
+}
+
+// ── Per-business topics ──
+function renderTopics(biz) {
+  const grid = document.getElementById('topicsGrid');
+  const topics = biz.topics || TOPIC_PRESETS['Digital Marketing'];
+  grid.innerHTML = topics.map(t => {
+    const on = t.on !== false;
+    return `<label class="topic-chip${on ? ' on' : ''}" onclick="toggleTopic(this)">
+      <div class="topic-check">${on ? '✓' : ''}</div>
+      <span class="topic-em">${t.em || '📌'}</span>
+      <span class="topic-text">${t.text}</span>
+    </label>`;
+  }).join('');
+}
+
+function saveCurrentTopicsToActiveBiz() {
+  const biz = businesses.find(b => b.id === activeBizId);
+  if (!biz) return;
+  biz.topics = [...document.querySelectorAll('.topic-chip')].map(c => ({
+    em: c.querySelector('.topic-em').textContent.trim(),
+    text: c.querySelector('.topic-text').textContent.trim(),
+    on: c.classList.contains('on'),
+  })).filter(t => t.text);
+}
+
+function addCustomTopic() {
+  const text = prompt('Enter topic name (e.g. "Patient Testimonials"):');
+  if (!text || !text.trim()) return;
+  const biz = businesses.find(b => b.id === activeBizId);
+  if (!biz.topics) biz.topics = [];
+  biz.topics.push({em: '📌', text: text.trim(), on: true});
+  renderTopics(biz);
 }
 
 function updateNext() {
@@ -613,13 +689,13 @@ function renderBizList() {
 }
 
 function switchBusiness(id) {
+  saveCurrentTopicsToActiveBiz(); // save current chip state before switching
   activeBizId = id;
   const biz = businesses.find(b => b.id === id);
   if (!biz) return;
-  // Update website URL to the business's URL
   document.getElementById('websiteUrl').value = biz.websiteUrl || '';
-  // Update topbar
   document.getElementById('topbarTitle').textContent = `GMB Poster — ${biz.name}`;
+  renderTopics(biz);
   renderBizList();
 }
 
@@ -627,6 +703,7 @@ function switchBusiness(id) {
 function openModal() {
   document.getElementById('newBizName').value = '';
   document.getElementById('newBizUrl').value = '';
+  document.getElementById('newBizCategory').value = 'Digital Marketing';
   document.getElementById('addBizModal').classList.add('open');
   setTimeout(() => document.getElementById('newBizName').focus(), 100);
 }
@@ -636,14 +713,16 @@ function handleModalClick(e) { if (e.target === document.getElementById('addBizM
 function confirmAddBusiness() {
   const name = document.getElementById('newBizName').value.trim();
   const url = document.getElementById('newBizUrl').value.trim();
+  const category = document.getElementById('newBizCategory').value;
   if (!name) { document.getElementById('newBizName').focus(); return; }
   if (!url) { document.getElementById('newBizUrl').focus(); return; }
   const id = 'biz_' + Date.now();
-  businesses.push({ id, name, websiteUrl: url });
+  const topics = (TOPIC_PRESETS[category] || TOPIC_PRESETS['Digital Marketing']).map(t => ({...t}));
+  businesses.push({ id, name, websiteUrl: url, category, topics });
   closeModal();
   renderBizList();
   switchBusiness(id);
-  showToast(`✓ "${name}" added — configure its settings and save`, 'ok');
+  showToast(`✓ "${name}" added with ${category} topics — save to apply`, 'ok');
 }
 
 // ── Apply config to UI ──
@@ -660,30 +739,46 @@ function applyConfig(cfg) {
     document.getElementById('postsPerWeek').value = cfg.postsPerWeek;
     document.getElementById('ppwDisplay').textContent = cfg.postsPerWeek;
   }
-  if (cfg.topics) {
-    document.querySelectorAll('.topic-chip').forEach(c => {
-      const on = cfg.topics.includes(c.querySelector('.topic-text').textContent);
-      c.classList.toggle('on', on);
-      c.querySelector('.topic-check').textContent = on ? '✓' : '';
-    });
-  }
   if (cfg.autoPost !== undefined) document.getElementById('autoPost').checked = cfg.autoPost;
   if (cfg.whatsappApproval !== undefined) document.getElementById('whatsappApproval').checked = cfg.whatsappApproval;
   if (cfg.includeImage !== undefined) document.getElementById('includeImage').checked = cfg.includeImage;
   if (cfg.learnMore !== undefined) document.getElementById('learnMore').checked = cfg.learnMore;
-  if (cfg.websiteUrl) document.getElementById('websiteUrl').value = cfg.websiteUrl;
-  // Load businesses if present
+  // Load businesses with per-business topics
   if (cfg.businesses && Array.isArray(cfg.businesses) && cfg.businesses.length > 0) {
-    businesses = cfg.businesses;
+    businesses = cfg.businesses.map(b => {
+      if (!b.topics || !b.topics.length) {
+        // Migrate: build topics from saved global topics string array or preset
+        const preset = TOPIC_PRESETS[b.category] || TOPIC_PRESETS['Digital Marketing'];
+        if (cfg.topics && Array.isArray(cfg.topics) && b.id === (cfg.activeBusiness || 'dh360')) {
+          b.topics = cfg.topics.map(text => {
+            const match = Object.values(TOPIC_PRESETS).flat().find(t => t.text === text);
+            return match ? {...match} : {em:'📌', text};
+          });
+        } else {
+          b.topics = preset.map(t => ({...t}));
+        }
+      }
+      return b;
+    });
     if (cfg.activeBusiness) activeBizId = cfg.activeBusiness;
   } else {
-    // Sync default business URL from config
     const biz = businesses.find(b => b.id === activeBizId);
-    if (biz && cfg.websiteUrl) biz.websiteUrl = cfg.websiteUrl;
+    if (biz) {
+      if (cfg.websiteUrl) biz.websiteUrl = cfg.websiteUrl;
+      if (cfg.topics && Array.isArray(cfg.topics)) {
+        biz.topics = cfg.topics.map(text => {
+          const match = Object.values(TOPIC_PRESETS).flat().find(t => t.text === text);
+          return match ? {...match} : {em:'📌', text};
+        });
+      }
+    }
   }
-  // Sync active biz name to topbar
   const activeBiz = businesses.find(b => b.id === activeBizId);
-  if (activeBiz) document.getElementById('topbarTitle').textContent = `GMB Poster — ${activeBiz.name}`;
+  if (activeBiz) {
+    document.getElementById('topbarTitle').textContent = `GMB Poster — ${activeBiz.name}`;
+    document.getElementById('websiteUrl').value = activeBiz.websiteUrl || cfg.websiteUrl || '';
+    renderTopics(activeBiz);
+  }
   currentSha = cfg._sha || null;
   renderBizList();
   updateNext();
@@ -694,8 +789,13 @@ async function loadSettings() {
   try {
     const r = await fetch('/api/config');
     if (r.ok) { const cfg = await r.json(); applyConfig(cfg); }
+    else {
+      const activeBiz = businesses.find(b => b.id === activeBizId);
+      if (activeBiz) renderTopics(activeBiz);
+    }
   } catch (e) {
-    // API not available in local preview
+    const activeBiz = businesses.find(b => b.id === activeBizId);
+    if (activeBiz) renderTopics(activeBiz);
   }
   document.getElementById('loading').style.display = 'none';
   renderBizList();
@@ -704,28 +804,38 @@ async function loadSettings() {
 
 // ── Save settings ──
 async function saveSettings() {
+  // Save current chip state (on/off) back into the active business
+  const activeBiz = businesses.find(b => b.id === activeBizId);
+  if (activeBiz) {
+    activeBiz.topics = [...document.querySelectorAll('.topic-chip')].map(c => ({
+      em: c.querySelector('.topic-em').textContent.trim(),
+      text: c.querySelector('.topic-text').textContent.trim(),
+      on: c.classList.contains('on'),
+    })).filter(t => t.text);
+    activeBiz.websiteUrl = document.getElementById('websiteUrl').value.trim();
+  }
+
   const ppw = parseInt(document.getElementById('postsPerWeek').value) || 2;
   const clamped = Math.min(7, Math.max(1, ppw));
   document.getElementById('postsPerWeek').value = clamped;
 
-  // Keep businesses list in sync with current websiteUrl for active biz
-  const activeWebsiteUrl = document.getElementById('websiteUrl').value.trim();
-  const activeBiz = businesses.find(b => b.id === activeBizId);
-  if (activeBiz) activeBiz.websiteUrl = activeWebsiteUrl;
-
   const btn = document.getElementById('saveBtn');
   btn.disabled = true; btn.textContent = 'Saving…';
+
+  // top-level topics = selected topics of active biz (bot reads this)
+  const selectedTopics = (activeBiz?.topics || []).filter(t => t.on !== false).map(t => t.text);
+
   const config = {
     active: isActive,
     days: [...document.querySelectorAll('.day-btn.on')].map(b => b.dataset.day),
     time: document.getElementById('postTime').value,
     postsPerWeek: clamped,
-    topics: [...document.querySelectorAll('.topic-chip.on')].map(c => c.querySelector('.topic-text').textContent),
+    topics: selectedTopics,
     autoPost: document.getElementById('autoPost').checked,
     whatsappApproval: document.getElementById('whatsappApproval').checked,
     includeImage: document.getElementById('includeImage').checked,
     learnMore: document.getElementById('learnMore').checked,
-    websiteUrl: activeWebsiteUrl,
+    websiteUrl: activeBiz?.websiteUrl || document.getElementById('websiteUrl').value.trim(),
     businesses: businesses,
     activeBusiness: activeBizId,
     _sha: currentSha,
