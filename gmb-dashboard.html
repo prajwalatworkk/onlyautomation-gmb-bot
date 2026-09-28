@@ -153,6 +153,20 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
 .toast.ok { background: var(--success-dim); color: var(--success); border: 1px solid rgba(16,217,154,0.2); }
 .toast.err { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
 
+/* STEPPER */
+.stepper { display: flex; align-items: center; gap: 0; border: 1px solid var(--border-2); border-radius: 8px; overflow: hidden; }
+.stepper-btn { width: 36px; height: 36px; background: var(--surface-2); border: none; color: var(--text-2); font-size: 18px; font-weight: 400; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; font-family: 'Inter', sans-serif; line-height: 1; }
+.stepper-btn:hover { background: var(--surface-3); color: var(--accent); }
+.stepper-btn:active { background: var(--accent-dim); }
+.stepper-val { min-width: 52px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text); padding: 0 4px; background: var(--surface-2); border-left: 1px solid var(--border-2); border-right: 1px solid var(--border-2); height: 36px; display: flex; align-items: center; justify-content: center; }
+
+/* STAT EDIT LINK */
+.stat-edit { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--accent); cursor: pointer; margin-top: 6px; opacity: 0.8; text-decoration: none; }
+.stat-edit:hover { opacity: 1; }
+
+/* SCHEDULE HIGHLIGHT */
+.card.highlight { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+
 /* LOADING */
 .loading { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 200; flex-direction: column; gap: 12px; }
 .spinner { width: 32px; height: 32px; border: 2px solid var(--border-2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
@@ -314,6 +328,7 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
         <div class="stat-label">Next Post</div>
         <div class="stat-value" id="statNextDay">Tue</div>
         <div class="stat-sub" id="statNextTime">10:00 AM</div>
+        <a class="stat-edit" onclick="editSchedule()">✏️ Edit schedule</a>
       </div>
       <div class="stat-card">
         <div class="stat-label">Total Published</div>
@@ -323,7 +338,7 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
     </div>
 
     <!-- Schedule -->
-    <div class="card">
+    <div class="card" id="scheduleCard">
       <div class="card-head">
         <div class="card-title">Posting Schedule</div>
         <div class="card-hint">Pick days + time</div>
@@ -349,9 +364,14 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
           <div class="form-row">
             <div class="form-info">
               <div class="form-label">Posts Per Week</div>
-              <div class="form-desc">Max posts per week (type any number 1–7)</div>
+              <div class="form-desc">How many times the bot posts per week</div>
             </div>
-            <input type="number" class="select-ctrl" id="postsPerWeek" value="2" min="1" max="7" step="1" style="width:110px">
+            <div class="stepper">
+              <button class="stepper-btn" onclick="changePostsPerWeek(-1)">−</button>
+              <div class="stepper-val" id="ppwDisplay">2</div>
+              <button class="stepper-btn" onclick="changePostsPerWeek(1)">+</button>
+              <input type="hidden" id="postsPerWeek" value="2">
+            </div>
           </div>
         </div>
       </div>
@@ -522,6 +542,22 @@ function toggleStatus() {
 
 function toggleDay(btn) { btn.classList.toggle('on'); updateNext(); }
 
+function changePostsPerWeek(delta) {
+  const input = document.getElementById('postsPerWeek');
+  const display = document.getElementById('ppwDisplay');
+  let val = parseInt(input.value || '2') + delta;
+  val = Math.min(7, Math.max(1, val));
+  input.value = val;
+  display.textContent = val;
+}
+
+function editSchedule() {
+  const card = document.getElementById('scheduleCard');
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  card.classList.add('highlight');
+  setTimeout(() => card.classList.remove('highlight'), 2000);
+}
+
 function toggleTopic(chip) {
   chip.classList.toggle('on');
   chip.querySelector('.topic-check').textContent = chip.classList.contains('on') ? '✓' : '';
@@ -620,7 +656,10 @@ function applyConfig(cfg) {
   }
   if (cfg.days) document.querySelectorAll('.day-btn').forEach(b => b.classList.toggle('on', cfg.days.includes(b.dataset.day)));
   if (cfg.time) document.getElementById('postTime').value = cfg.time;
-  if (cfg.postsPerWeek != null) document.getElementById('postsPerWeek').value = cfg.postsPerWeek;
+  if (cfg.postsPerWeek != null) {
+    document.getElementById('postsPerWeek').value = cfg.postsPerWeek;
+    document.getElementById('ppwDisplay').textContent = cfg.postsPerWeek;
+  }
   if (cfg.topics) {
     document.querySelectorAll('.topic-chip').forEach(c => {
       const on = cfg.topics.includes(c.querySelector('.topic-text').textContent);
