@@ -60,23 +60,28 @@ module.exports = async function handler(req, res) {
       };
       if (sha) body.sha = sha;
 
-      const r = await fetch(
-        `https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `token ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/vnd.github.v3+json',
-          },
-          body: JSON.stringify(body),
-        }
-      );
-      if (!r.ok) {
-        const err = await r.json();
-        return res.status(500).json({ error: err.message || 'GitHub API error' });
+      // GitHub answers 409 "is at X but expected Y" when another commit (e.g. a logo upload) lands moments before.
+      let lastError = 'GitHub API error';
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const r = await fetch(
+          `https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`,
+          {
+            method: 'PUT',
+            headers: {
+              Authorization: `token ${GITHUB_TOKEN}`,
+              'Content-Type': 'application/json',
+              Accept: 'application/vnd.github.v3+json',
+            },
+            body: JSON.stringify(body),
+          }
+        );
+        if (r.ok) return res.status(200).json({ ok: true });
+        const err = await r.json().catch(() => ({}));
+        lastError = err.message || lastError;
+        if (r.status !== 409 || !/but expected/.test(lastError)) break;
+        await new Promise(done => setTimeout(done, 1500 * attempt));
       }
-      return res.status(200).json({ ok: true });
+      return res.status(500).json({ error: lastError });
     } catch (e) {
       return res.status(500).json({ error: e.message });
     }

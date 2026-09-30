@@ -28,19 +28,24 @@ module.exports = async function handler(req, res) {
     'Content-Type': 'application/json',
   };
   try {
-    let sha;
-    const existing = await fetch(url, { headers });
-    if (existing.ok) sha = (await existing.json()).sha;
-    const r = await fetch(url, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify({ message: `logo · ${bizId}`, content: m[1], ...(sha ? { sha } : {}) }),
-    });
-    if (!r.ok) {
+    // GitHub answers 409 when another commit (e.g. a settings save) lands moments before; re-read and retry.
+    let lastError = 'GitHub API error';
+    for (let attempt = 1; attempt <= 4; attempt++) {
+      let sha;
+      const existing = await fetch(`${url}?ref=main&t=${Date.now()}`, { headers: { ...headers, 'Cache-Control': 'no-cache' } });
+      if (existing.ok) sha = (await existing.json()).sha;
+      const r = await fetch(url, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ message: `logo · ${bizId}`, content: m[1], ...(sha ? { sha } : {}) }),
+      });
+      if (r.ok) return res.status(200).json({ ok: true, path });
       const err = await r.json().catch(() => ({}));
-      return res.status(500).json({ error: err.message || 'GitHub API error' });
+      lastError = err.message || lastError;
+      if (r.status !== 409) break;
+      await new Promise(done => setTimeout(done, 1500 * attempt));
     }
-    return res.status(200).json({ ok: true, path });
+    return res.status(500).json({ error: lastError });
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
