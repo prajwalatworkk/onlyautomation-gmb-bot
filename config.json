@@ -94,9 +94,15 @@
           "text": "Festive Offers",
           "on": true
         }
-      ]
+      ],
+      "logoPath": "logos/biz_1790751484535.png",
+      "logoVersion": 1,
+      "brand": {
+        "primary": "#11CFE7",
+        "secondary": "#3379BD"
+      }
     }
   ],
   "activeBusiness": "biz_1790751484535",
-  "updatedAt": "2026-09-30T08:07:59.364Z"
+  "updatedAt": "2026-09-30T09:34:50.723Z"
 }
