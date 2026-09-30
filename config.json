@@ -1,30 +1,102 @@
 {
   "active": true,
   "days": [
-    "Mon",
     "Wed",
+    "Fri",
     "Sun"
   ],
-  "time": "17:45",
+  "time": "11:00",
   "postsPerWeek": 3,
-  "topics": [],
+  "topics": [
+    "Google Ads Tips",
+    "Lead Generation",
+    "Website Design",
+    "Local SEO",
+    "Social Media",
+    "Festive Offers"
+  ],
   "autoPost": true,
-  "whatsappApproval": false,
+  "whatsappApproval": true,
   "includeImage": true,
   "learnMore": true,
-  "websiteUrl": "https://www.xcellentchairs.com/",
+  "websiteUrl": "https://www.justassign.com/",
   "businesses": [
     {
       "id": "dh360",
       "name": "Digital Hub 360",
-      "websiteUrl": "https://digitalhub360.in"
+      "websiteUrl": "https://digitalhub360.in",
+      "topics": [
+        {
+          "em": "🎯",
+          "text": "Google Ads Tips"
+        },
+        {
+          "em": "📈",
+          "text": "Lead Generation"
+        },
+        {
+          "em": "🌐",
+          "text": "Website Design"
+        },
+        {
+          "em": "🔍",
+          "text": "Local SEO"
+        },
+        {
+          "em": "📱",
+          "text": "Social Media"
+        },
+        {
+          "em": "🎉",
+          "text": "Festive Offers"
+        }
+      ]
     },
     {
       "id": "biz_1790597105873",
       "name": "Xcellent Seating Systems",
-      "websiteUrl": "https://www.xcellentchairs.com/"
+      "websiteUrl": "https://www.xcellentchairs.com/",
+      "topics": []
+    },
+    {
+      "id": "biz_1790751484535",
+      "name": "Just Assign",
+      "websiteUrl": "https://www.justassign.com/",
+      "category": "Digital Marketing",
+      "topics": [
+        {
+          "em": "🎯",
+          "text": "Google Ads Tips",
+          "on": true
+        },
+        {
+          "em": "📈",
+          "text": "Lead Generation",
+          "on": true
+        },
+        {
+          "em": "🌐",
+          "text": "Website Design",
+          "on": true
+        },
+        {
+          "em": "🔍",
+          "text": "Local SEO",
+          "on": true
+        },
+        {
+          "em": "📱",
+          "text": "Social Media",
+          "on": true
+        },
+        {
+          "em": "🎉",
+          "text": "Festive Offers",
+          "on": true
+        }
+      ]
     }
   ],
-  "activeBusiness": "biz_1790597105873",
-  "updatedAt": "2026-09-28T12:05:48.555Z"
+  "activeBusiness": "biz_1790751484535",
+  "updatedAt": "2026-09-30T06:58:51.705Z"
 }
