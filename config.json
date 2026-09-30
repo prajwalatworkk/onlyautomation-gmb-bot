@@ -2,24 +2,29 @@
   "active": true,
   "days": [
     "Wed",
+    "Thu",
     "Fri",
-    "Sun"
+    "Sat"
   ],
-  "time": "13:00",
-  "postsPerWeek": 3,
+  "time": "17:40",
+  "postsPerWeek": 4,
   "topics": [
-    "Google Ads Tips",
-    "Lead Generation",
-    "Website Design",
-    "Local SEO",
-    "Social Media",
-    "Festive Offers"
+    "Ergonomic Seating",
+    "Office Space Setup",
+    "Bulk & Corporate Orders",
+    "Lounge & Reception Furniture",
+    "Seasonal Offers",
+    "Executive Chairs",
+    "Computer & Work Chairs",
+    "Restaurant & Café Seating",
+    "Training Room Chairs",
+    "Bulk & Corporate Orders"
   ],
   "autoPost": true,
   "whatsappApproval": true,
   "includeImage": true,
   "learnMore": true,
-  "websiteUrl": "https://digitalhub360.in",
+  "websiteUrl": "https://www.xcellentchairs.com/",
   "businesses": [
     {
       "id": "dh360",
@@ -107,8 +112,93 @@
         "primary": "#11CFE7",
         "secondary": "#3379BD"
       }
+    },
+    {
+      "id": "biz_1790768944429",
+      "name": "Xcellent Seating Systems",
+      "websiteUrl": "https://www.xcellentchairs.com/",
+      "category": "Office Furniture & Seating",
+      "topics": [
+        {
+          "em": "🪑",
+          "text": "Ergonomic Seating",
+          "on": true
+        },
+        {
+          "em": "🏢",
+          "text": "Office Space Setup",
+          "on": true
+        },
+        {
+          "em": "📦",
+          "text": "Bulk & Corporate Orders",
+          "on": true
+        },
+        {
+          "em": "🛋️",
+          "text": "Lounge & Reception Furniture",
+          "on": true
+        },
+        {
+          "em": "⭐",
+          "text": "Client Projects",
+          "on": false
+        },
+        {
+          "em": "🎉",
+          "text": "Seasonal Offers",
+          "on": true
+        },
+        {
+          "em": "📌",
+          "text": "Executive Chairs",
+          "on": true
+        },
+        {
+          "em": "📌",
+          "text": "Computer & Work Chairs",
+          "on": true
+        },
+        {
+          "em": "📌",
+          "text": "Restaurant & Café Seating",
+          "on": true
+        },
+        {
+          "em": "📌",
+          "text": "Training Room Chairs",
+          "on": true
+        },
+        {
+          "em": "📌",
+          "text": "Bulk & Corporate Orders",
+          "on": true
+        }
+      ],
+      "keywords": [
+        "Office Chair Manufacturers in Bangalore",
+        "Office Chair Manufacturer Bangalore",
+        "Office Chair Suppliers in Bangalore",
+        "Office Chairs in Bangalore",
+        "Office Furniture Manufacturers in Bangalore",
+        "Ergonomic Office Chairs Bangalore",
+        "Executive Chairs Bangalore",
+        "Computer Chairs Bangalore",
+        "Office Chair Dealers in Bangalore",
+        "Chair Manufacturers in Bangalore",
+        "Hospital Waiting Sofa in Bangalore",
+        "Banquet Chairs in Bangalore",
+        "Computer Tables in Bangalore"
+      ],
+      "notes": "Office and commercial seating supplier in Vijayanagar, Bangalore, with 15+ years of experience. Products: high back and medium back executive chairs, computer chairs, visitor chairs, writing pad chairs, restaurant chairs, barstools, lounge chairs and 3-seater sofas. Supplies bulk orders for corporate offices, co-working spaces, restaurants, cafes and institutions, plus single chairs for home offices. Ergonomic designs with adjustable lumbar support. Quality checked, with warranty and after-sales support. Delivers across India, including Bangalore, Mumbai, Pune and Delhi.",
+      "brand": {
+        "primary": "#164477",
+        "secondary": "#2D3685"
+      },
+      "logoPath": "logos/biz_1790768944429.png",
+      "logoVersion": 1790769061697
     }
   ],
-  "activeBusiness": "dh360",
-  "updatedAt": "2026-09-30T11:31:53.637Z"
+  "activeBusiness": "biz_1790768944429",
+  "updatedAt": "2026-09-30T12:04:17.623Z"
 }
