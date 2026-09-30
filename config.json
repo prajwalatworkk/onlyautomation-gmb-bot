@@ -60,7 +60,9 @@
       "brand": {
         "primary": "#D81333",
         "secondary": "#073389"
-      }
+      },
+      "logoPath": "logos/dh360.png",
+      "logoVersion": 1790767560029
     },
     {
       "id": "biz_1790597105873",
@@ -139,5 +141,5 @@
     }
   ],
   "activeBusiness": "dh360",
-  "updatedAt": "2026-09-30T11:10:54.792Z"
+  "updatedAt": "2026-09-30T11:26:05.765Z"
 }
