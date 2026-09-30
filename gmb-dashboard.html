@@ -171,6 +171,20 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
 /* SCHEDULE HIGHLIGHT */
 .card.highlight { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
 
+/* BRAND */
+.brand-row { display: flex; gap: 20px; align-items: center; }
+.logo-box { width: 120px; height: 120px; border-radius: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid var(--border-2); overflow: hidden; padding: 12px; }
+.logo-box img { max-width: 100%; max-height: 100%; display: none; }
+.logo-box .empty { font-size: 11px; color: #94A3B8; text-align: center; line-height: 1.4; }
+.brand-ctrl { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.upload-btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; }
+.upload-status { font-size: 12px; color: var(--text-2); }
+.upload-status.ok { color: var(--success); }
+.upload-status.err { color: var(--danger); }
+.swatches { display: flex; gap: 16px; flex-wrap: wrap; }
+.swatch { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-2); cursor: pointer; }
+.swatch input[type="color"] { width: 34px; height: 34px; border: 1px solid var(--border-2); border-radius: 8px; background: none; padding: 2px; cursor: pointer; }
+
 /* LOADING */
 .loading { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 200; flex-direction: column; gap: 12px; }
 .spinner { width: 32px; height: 32px; border: 2px solid var(--border-2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
@@ -388,6 +402,29 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
               <div class="stepper-val" id="ppwDisplay">2</div>
               <button class="stepper-btn" onclick="changePostsPerWeek(1)">+</button>
               <input type="hidden" id="postsPerWeek" value="2">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brand -->
+    <div class="card" id="brandCard">
+      <div class="card-head">
+        <div class="card-title">Brand</div>
+        <div class="card-hint">Logo &amp; colours used on every post image</div>
+      </div>
+      <div class="card-body">
+        <div class="brand-row">
+          <div class="logo-box"><img id="logoImg" alt="Logo"><div class="empty" id="logoEmpty">No logo yet</div></div>
+          <div class="brand-ctrl">
+            <label class="btn btn-ghost upload-btn">⬆ Upload logo
+              <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden onchange="onLogoPicked(this)">
+            </label>
+            <div class="upload-status" id="logoStatus">PNG with a transparent background works best. Colours are picked from the logo automatically.</div>
+            <div class="swatches">
+              <label class="swatch"><input type="color" id="brandPrimary" oninput="onBrandColor()"> Primary</label>
+              <label class="swatch"><input type="color" id="brandSecondary" oninput="onBrandColor()"> Accent</label>
             </div>
           </div>
         </div>
@@ -696,7 +733,124 @@ function switchBusiness(id) {
   document.getElementById('websiteUrl').value = biz.websiteUrl || '';
   document.getElementById('topbarTitle').textContent = `GMB Poster — ${biz.name}`;
   renderTopics(biz);
+  renderBrand(biz);
   renderBizList();
+}
+
+// ── Brand: logo + colours ──
+const DEFAULT_BRAND = { primary: '#2563EB', secondary: '#F59E0B' };
+
+function setLogoStatus(msg, cls = '') {
+  const el = document.getElementById('logoStatus');
+  el.textContent = msg;
+  el.className = 'upload-status ' + cls;
+}
+
+function renderBrand(biz) {
+  const img = document.getElementById('logoImg');
+  const empty = document.getElementById('logoEmpty');
+  const src = biz._logoData || (biz.logoPath ? `/${biz.logoPath}?v=${biz.logoVersion || ''}` : '');
+  img.onerror = () => { img.style.display = 'none'; empty.style.display = 'block'; empty.textContent = 'Logo saved — preview after deploy'; };
+  if (src) { img.src = src; img.style.display = 'block'; empty.style.display = 'none'; }
+  else { img.removeAttribute('src'); img.style.display = 'none'; empty.style.display = 'block'; empty.textContent = 'No logo yet'; }
+  const b = biz.brand || DEFAULT_BRAND;
+  document.getElementById('brandPrimary').value = b.primary;
+  document.getElementById('brandSecondary').value = b.secondary;
+  setLogoStatus(biz.brand ? 'Post images use this logo and these colours.'
+    : 'PNG with a transparent background works best. Colours are picked from the logo automatically.');
+}
+
+function onBrandColor() {
+  const biz = businesses.find(b => b.id === activeBizId);
+  biz.brand = { primary: document.getElementById('brandPrimary').value, secondary: document.getElementById('brandSecondary').value };
+  setLogoStatus('Colours changed — click Save & Apply.');
+}
+
+function rgbToHsv(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0;
+  if (d) h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [((h * 60) + 360) % 360, mx ? d / mx : 0, mx];
+}
+const toHex = rgb => '#' + rgb.map(v => Math.round(v).toString(16).padStart(2, '0')).join('').toUpperCase();
+
+// Crop empty margins (transparent / white / faint shadow) and find the logo's dominant brand colours.
+function processLogo(img) {
+  const c = document.createElement('canvas');
+  const scale = Math.min(1, 800 / Math.max(img.naturalWidth || 800, img.naturalHeight || 800));
+  c.width = Math.max(1, Math.round((img.naturalWidth || 800) * scale));
+  c.height = Math.max(1, Math.round((img.naturalHeight || 800) * scale));
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  const d = ctx.getImageData(0, 0, c.width, c.height).data;
+  let x0 = c.width, y0 = c.height, x1 = -1, y1 = -1;
+  const buckets = new Map();
+  for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) {
+    const i = (y * c.width + x) * 4, r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
+    if (a < 100) continue;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+    if (mn > 150 && mx - mn < 26) continue;
+    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+    const sat = (mx - mn) / 255, k = (r >> 5) << 6 | (g >> 5) << 3 | (b >> 5);
+    const e = buckets.get(k) || { w: 0, r: 0, g: 0, b: 0, n: 0 };
+    e.w += 1 + 4 * sat; e.r += r; e.g += g; e.b += b; e.n++;
+    buckets.set(k, e);
+  }
+  let out = c;
+  if (x1 >= 0) {
+    const pad = Math.round(0.04 * Math.max(x1 - x0, y1 - y0));
+    x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad);
+    x1 = Math.min(c.width - 1, x1 + pad); y1 = Math.min(c.height - 1, y1 + pad);
+    out = document.createElement('canvas');
+    out.width = x1 - x0 + 1; out.height = y1 - y0 + 1;
+    out.getContext('2d').drawImage(c, x0, y0, out.width, out.height, 0, 0, out.width, out.height);
+  }
+  const cols = [...buckets.values()].map(e => ({ w: e.w, rgb: [e.r / e.n, e.g / e.n, e.b / e.n] })).sort((a, b) => b.w - a.w);
+  let primary = DEFAULT_BRAND.primary, secondary = DEFAULT_BRAND.secondary;
+  if (cols.length) {
+    const total = cols.reduce((s, c) => s + c.w, 0);
+    const colourful = cols.filter(c => { const [, s, v] = rgbToHsv(...c.rgb); return s > 0.25 && v > 0.2 && c.w >= 0.04 * total; });
+    const p = (colourful[0] || cols[0]).rgb, ph = rgbToHsv(...p)[0];
+    primary = toHex(p);
+    const sec = cols.find(c => {
+      const [h, s, v] = rgbToHsv(...c.rgb), dist = Math.min(Math.abs(h - ph), 360 - Math.abs(h - ph));
+      return s > 0.2 && v > 0.2 && dist > 18 && c.w >= 0.02 * total;
+    });
+    secondary = sec ? toHex(sec.rgb) : toHex(p.map(v => v + (255 - v) * 0.45));
+  }
+  return { dataUrl: out.toDataURL('image/png'), primary, secondary };
+}
+
+function onLogoPicked(input) {
+  const file = input.files[0];
+  input.value = '';
+  if (!file) return;
+  const biz = businesses.find(b => b.id === activeBizId);
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = async () => {
+      const { dataUrl, primary, secondary } = processLogo(img);
+      biz._logoData = dataUrl;
+      biz.brand = { primary, secondary };
+      renderBrand(biz);
+      setLogoStatus('Uploading logo…');
+      try {
+        const r = await fetch('/api/logo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bizId: biz.id, dataUrl }) });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok || !data.ok) throw new Error(data.error || `HTTP ${r.status}`);
+        biz.logoPath = data.path;
+        biz.logoVersion = Date.now();
+        setLogoStatus('✓ Logo uploaded, colours picked from it. Click Save & Apply to use them.', 'ok');
+      } catch (e) {
+        setLogoStatus('✗ Upload failed: ' + e.message, 'err');
+      }
+    };
+    img.onerror = () => setLogoStatus('✗ Could not read that image file.', 'err');
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 // ── Modal ──
@@ -778,6 +932,7 @@ function applyConfig(cfg) {
     document.getElementById('topbarTitle').textContent = `GMB Poster — ${activeBiz.name}`;
     document.getElementById('websiteUrl').value = activeBiz.websiteUrl || cfg.websiteUrl || '';
     renderTopics(activeBiz);
+    renderBrand(activeBiz);
   }
   currentSha = cfg._sha || null;
   renderBizList();
@@ -791,11 +946,11 @@ async function loadSettings() {
     if (r.ok) { const cfg = await r.json(); applyConfig(cfg); }
     else {
       const activeBiz = businesses.find(b => b.id === activeBizId);
-      if (activeBiz) renderTopics(activeBiz);
+      if (activeBiz) { renderTopics(activeBiz); renderBrand(activeBiz); }
     }
   } catch (e) {
     const activeBiz = businesses.find(b => b.id === activeBizId);
-    if (activeBiz) renderTopics(activeBiz);
+    if (activeBiz) { renderTopics(activeBiz); renderBrand(activeBiz); }
   }
   document.getElementById('loading').style.display = 'none';
   renderBizList();
@@ -841,7 +996,7 @@ async function saveSettings() {
     _sha: currentSha,
   };
   try {
-    const r = await fetch('/api/config', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(config) });
+    const r = await fetch('/api/config', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(config, (k, v) => k.startsWith('_') && k !== '_sha' ? undefined : v) });
     const data = await r.json();
     if (r.ok && data.ok) {
       showToast('✓ Saved! Bot will follow new settings on next run.', 'ok');
