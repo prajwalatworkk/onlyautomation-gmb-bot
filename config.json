@@ -19,12 +19,53 @@
   "whatsappApproval": true,
   "includeImage": true,
   "learnMore": true,
-  "websiteUrl": "https://www.justassign.com/",
+  "websiteUrl": "https://digitalhub360.in",
   "businesses": [
     {
       "id": "dh360",
       "name": "Digital Hub 360",
       "websiteUrl": "https://digitalhub360.in",
+      "topics": [
+        {
+          "em": "🎯",
+          "text": "Google Ads Tips",
+          "on": true
+        },
+        {
+          "em": "📈",
+          "text": "Lead Generation",
+          "on": true
+        },
+        {
+          "em": "🌐",
+          "text": "Website Design",
+          "on": true
+        },
+        {
+          "em": "🔍",
+          "text": "Local SEO",
+          "on": true
+        },
+        {
+          "em": "📱",
+          "text": "Social Media",
+          "on": true
+        },
+        {
+          "em": "🎉",
+          "text": "Festive Offers",
+          "on": true
+        }
+      ],
+      "brand": {
+        "primary": "#D81333",
+        "secondary": "#073389"
+      }
+    },
+    {
+      "id": "biz_1790597105873",
+      "name": "Xcellent Seating Systems",
+      "websiteUrl": "https://www.xcellentchairs.com/",
       "topics": [
         {
           "em": "🎯",
@@ -51,12 +92,6 @@
           "text": "Festive Offers"
         }
       ]
-    },
-    {
-      "id": "biz_1790597105873",
-      "name": "Xcellent Seating Systems",
-      "websiteUrl": "https://www.xcellentchairs.com/",
-      "topics": []
     },
     {
       "id": "biz_1790751484535",
@@ -103,6 +138,6 @@
       }
     }
   ],
-  "activeBusiness": "biz_1790751484535",
-  "updatedAt": "2026-09-30T09:34:50.723Z"
+  "activeBusiness": "dh360",
+  "updatedAt": "2026-09-30T11:08:35.652Z"
 }
