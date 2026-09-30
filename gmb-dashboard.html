@@ -399,7 +399,7 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
     <div class="card" id="scheduleCard">
       <div class="card-head">
         <div class="card-title">Posting Schedule</div>
-        <div class="card-hint">Pick days + time</div>
+        <div class="card-hint" id="scheduleFor">Pick days + time</div>
       </div>
       <div class="card-body">
         <div class="day-row" id="dayRow">
@@ -513,12 +513,12 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
             </div>
             <label class="tog"><input type="checkbox" id="autoPost" checked><div class="tog-track"></div><div class="tog-thumb"></div></label>
           </div>
-          <div class="form-row">
+          <div class="form-row" style="opacity:.5">
             <div class="form-info">
-              <div class="form-label">WhatsApp Preview First</div>
-              <div class="form-desc">Send draft to WhatsApp for approval before posting</div>
+              <div class="form-label">WhatsApp Preview First <span class="nav-badge" style="margin-left:6px">Coming soon</span></div>
+              <div class="form-desc">Send each draft to WhatsApp for approval before posting — not available yet</div>
             </div>
-            <label class="tog"><input type="checkbox" id="whatsappApproval"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+            <label class="tog" style="pointer-events:none"><input type="checkbox" id="whatsappApproval" disabled><div class="tog-track"></div><div class="tog-thumb"></div></label>
           </div>
           <div class="form-row">
             <div class="form-info">
@@ -760,7 +760,13 @@ function showToast(msg, type) {
 }
 
 function toggleStatus() {
-  isActive = !isActive;
+  setStatusUI(!isActive);
+  const b = currentBiz();
+  if (b) { b.schedule = readScheduleUI(); renderBizList(); }
+}
+
+function setStatusUI(active) {
+  isActive = active;
   const el = document.getElementById('statusToggle');
   const label = document.getElementById('statusLabel');
   const dot = document.getElementById('sidebarStatus');
@@ -771,6 +777,41 @@ function toggleStatus() {
     el.className = 'status-toggle paused'; label.textContent = 'Paused';
     dot.className = 'nav-status off';
   }
+}
+
+// ── Per-business schedule ──
+const SCHEDULE_DEFAULT = { active: true, days: ['Tue', 'Fri'], time: '10:00', postsPerWeek: 2, autoPost: true, includeImage: true, learnMore: true };
+
+function readScheduleUI() {
+  return {
+    active: isActive,
+    days: [...document.querySelectorAll('.day-btn.on')].map(b => b.dataset.day),
+    time: document.getElementById('postTime').value || '10:00',
+    postsPerWeek: Math.min(7, Math.max(1, parseInt(document.getElementById('postsPerWeek').value) || 2)),
+    autoPost: document.getElementById('autoPost').checked,
+    includeImage: document.getElementById('includeImage').checked,
+    learnMore: document.getElementById('learnMore').checked,
+  };
+}
+
+function writeScheduleUI(sch) {
+  const s = { ...SCHEDULE_DEFAULT, ...(sch || {}) };
+  setStatusUI(s.active !== false);
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.toggle('on', s.days.includes(b.dataset.day)));
+  document.getElementById('postTime').value = s.time;
+  document.getElementById('postsPerWeek').value = s.postsPerWeek;
+  document.getElementById('ppwDisplay').textContent = s.postsPerWeek;
+  document.getElementById('autoPost').checked = s.autoPost;
+  document.getElementById('includeImage').checked = s.includeImage;
+  document.getElementById('learnMore').checked = s.learnMore;
+  const b = currentBiz();
+  document.getElementById('scheduleFor').textContent = b ? `Days + time for ${b.name}` : 'Pick days + time';
+  updateNext();
+}
+
+function stashSchedule() {
+  const b = currentBiz();
+  if (b) b.schedule = readScheduleUI();
 }
 
 function toggleDay(btn) { btn.classList.toggle('on'); updateNext(); }
@@ -872,7 +913,7 @@ function renderBizList() {
     div.innerHTML = `
       <div class="biz-avatar${isActiveBiz ? ' active-biz' : ''}"></div>
       <div class="biz-name"></div>
-      <div class="biz-dot${isActive ? '' : ' off'}"></div>
+      <div class="biz-dot${(isActiveBiz ? isActive : (biz.schedule ? biz.schedule.active !== false : true)) ? '' : ' off'}"></div>
       <button class="biz-remove" title="Remove business" aria-label="Remove business">×</button>
     `;
     div.querySelector('.biz-avatar').textContent = initials;
@@ -920,6 +961,7 @@ async function confirmRemoveBusiness() {
 
 function switchBusiness(id) {
   saveCurrentTopicsToActiveBiz(); // save current chip state before switching
+  stashSchedule();
   activeBizId = id;
   const biz = businesses.find(b => b.id === id);
   if (!biz) return;
@@ -928,6 +970,7 @@ function switchBusiness(id) {
   renderTopics(biz);
   renderProfile(biz);
   renderBrand(biz);
+  writeScheduleUI(biz.schedule);
   renderBizList();
 }
 
@@ -1138,7 +1181,7 @@ function confirmAddBusiness() {
   if (!url) { document.getElementById('newBizUrl').focus(); return; }
   const id = 'biz_' + Date.now();
   const topics = topicsFor(category);
-  businesses.push({ id, name, websiteUrl: url, category, topics, keywords: [] });
+  businesses.push({ id, name, websiteUrl: url, category, topics, keywords: [], schedule: { ...SCHEDULE_DEFAULT } });
   closeModal();
   renderBizList();
   switchBusiness(id);
@@ -1181,6 +1224,12 @@ function applyConfig(cfg) {
       return b;
     });
     if (cfg.activeBusiness) activeBizId = cfg.activeBusiness;
+    const legacy = {
+      active: cfg.active !== false, days: cfg.days || SCHEDULE_DEFAULT.days, time: cfg.time || SCHEDULE_DEFAULT.time,
+      postsPerWeek: cfg.postsPerWeek || SCHEDULE_DEFAULT.postsPerWeek, autoPost: cfg.autoPost !== false,
+      includeImage: cfg.includeImage !== false, learnMore: cfg.learnMore !== false,
+    };
+    businesses.forEach(b => { if (!b.schedule) b.schedule = { ...legacy }; });
   } else {
     const biz = businesses.find(b => b.id === activeBizId);
     if (biz) {
@@ -1200,6 +1249,7 @@ function applyConfig(cfg) {
     renderTopics(activeBiz);
     renderProfile(activeBiz);
     renderBrand(activeBiz);
+    writeScheduleUI(activeBiz.schedule || readScheduleUI());
   }
   currentSha = cfg._sha || null;
   renderBizList();
@@ -1235,6 +1285,7 @@ async function saveSettings(successMsg) {
       on: c.classList.contains('on'),
     })).filter(t => t.text);
     activeBiz.websiteUrl = document.getElementById('websiteUrl').value.trim();
+    activeBiz.schedule = readScheduleUI();
   }
 
   const ppw = parseInt(document.getElementById('postsPerWeek').value) || 2;
@@ -1255,7 +1306,7 @@ async function saveSettings(successMsg) {
     postsPerWeek: clamped,
     topics: selectedTopics,
     autoPost: document.getElementById('autoPost').checked,
-    whatsappApproval: document.getElementById('whatsappApproval').checked,
+    whatsappApproval: false,
     includeImage: document.getElementById('includeImage').checked,
     learnMore: document.getElementById('learnMore').checked,
     websiteUrl: activeBiz?.websiteUrl || document.getElementById('websiteUrl').value.trim(),
@@ -1282,12 +1333,10 @@ async function saveSettings(successMsg) {
 }
 
 function resetSettings() {
-  applyConfig({
-    active: true, days: ['Tue','Fri'], time: '10:00', postsPerWeek: 2,
-    topics: ['Google Ads Tips','Lead Generation','Website Design','Local SEO','Social Media'],
-    autoPost: true, whatsappApproval: false, includeImage: true, learnMore: true,
-    websiteUrl: 'https://digitalhub360.in'
-  });
+  writeScheduleUI(SCHEDULE_DEFAULT);
+  stashSchedule();
+  renderBizList();
+  showToast('Schedule reset for this business — Save & Apply to keep', 'ok');
 }
 
 loadSettings();
