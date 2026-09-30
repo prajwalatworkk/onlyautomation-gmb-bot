@@ -175,6 +175,23 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
 /* SCHEDULE HIGHLIGHT */
 .card.highlight { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
 
+/* BUSINESS PROFILE */
+.profile-body { display: flex; flex-direction: column; gap: 16px; }
+.field-hint { font-size: 11.5px; color: var(--text-3); margin-top: 6px; line-height: 1.4; }
+.opt { font-weight: 400; color: var(--text-3); }
+.industry-row { display: flex; gap: 10px; }
+.industry-row .field-input { flex: 1; }
+.small-btn { padding: 8px 14px; font-size: 12.5px; white-space: nowrap; }
+textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
+.kw-box { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px; min-height: 44px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 8px; cursor: text; }
+.kw-box:focus-within { border-color: var(--accent); }
+.kw-list { display: contents; }
+.kw { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 11px; border-radius: 14px; background: var(--accent-dim); color: var(--accent); font-size: 12.5px; font-weight: 500; }
+.kw button { border: none; background: none; color: inherit; font-size: 14px; line-height: 1; cursor: pointer; opacity: .7; padding: 0 3px; }
+.kw button:hover { opacity: 1; color: var(--danger); }
+.kw-input { flex: 1; min-width: 200px; background: none; border: none; outline: none; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; padding: 4px; }
+.kw-input::placeholder { color: var(--text-3); }
+
 /* BRAND */
 .brand-row { display: flex; gap: 20px; align-items: center; }
 .logo-box { width: 120px; height: 120px; border-radius: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid var(--border-2); overflow: hidden; padding: 12px; }
@@ -258,17 +275,9 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
         <input class="field-input" id="newBizUrl" type="url" placeholder="https://example.com">
       </div>
       <div class="field-group">
-        <label class="field-label">Business Category — sets post topics automatically</label>
-        <select class="field-input" id="newBizCategory">
-          <option value="Digital Marketing">Digital Marketing Agency</option>
-          <option value="Dental Clinic">Dental Clinic</option>
-          <option value="Restaurant / Café">Restaurant / Café</option>
-          <option value="Salon & Spa">Salon & Spa</option>
-          <option value="Gym / Fitness">Gym / Fitness</option>
-          <option value="Real Estate">Real Estate</option>
-          <option value="Medical Clinic">Medical Clinic</option>
-          <option value="Education / Coaching">Education / Coaching</option>
-        </select>
+        <label class="field-label">Industry — pick from the list or type your own</label>
+        <input class="field-input" id="newBizIndustry" list="industryList" placeholder="e.g. Office Furniture & Seating" autocomplete="off">
+        <div class="field-hint">Sets starting post topics. Not listed? Type it — posts are written from the industry, website and keywords.</div>
       </div>
     </div>
     <div class="modal-foot">
@@ -426,6 +435,35 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
       </div>
     </div>
 
+    <!-- Business profile -->
+    <div class="card" id="profileCard">
+      <div class="card-head">
+        <div class="card-title">Business Profile</div>
+        <div class="card-hint">What the AI writes about</div>
+      </div>
+      <div class="card-body profile-body">
+        <div class="field-group">
+          <label class="field-label">Industry</label>
+          <div class="industry-row">
+            <input class="field-input" id="bizIndustry" list="industryList" placeholder="Pick or type, e.g. Office Furniture & Seating" autocomplete="off" oninput="onIndustryInput()">
+            <button class="btn btn-ghost small-btn" onclick="loadIndustryTopics()">Use suggested topics</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">What they sell / key services <span class="opt">(optional)</span></label>
+          <textarea class="field-input" id="bizNotes" rows="2" placeholder="e.g. Executive, visitor & computer chairs, office workstations, bulk orders for corporates, pan-India delivery" oninput="onNotesInput()"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Target keywords <span class="opt">— each post uses 1–2 of these, rotating</span></label>
+          <div class="kw-box" onclick="document.getElementById('kwInput').focus()">
+            <div id="kwList" class="kw-list"></div>
+            <input id="kwInput" class="kw-input" placeholder="Type a keyword and press Enter (paste a list to add many)" onkeydown="onKwKey(event)" onpaste="onKwPaste(event)" onblur="addKeywords(this.value); this.value=''">
+          </div>
+        </div>
+      </div>
+    </div>
+    <datalist id="industryList"></datalist>
+
     <!-- Brand -->
     <div class="card" id="brandCard">
       <div class="card-head">
@@ -559,22 +597,77 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
 </div><!-- /main -->
 
 <script>
-// ── Topic presets per business category ──
+// ── Topic presets per industry (type any other industry → 'Other' topics) ──
 const TOPIC_PRESETS = {
-  'Digital Marketing': [
+  'Digital Marketing Agency': [
     {em:'🎯',text:'Google Ads Tips'},{em:'📈',text:'Lead Generation'},
     {em:'🌐',text:'Website Design'},{em:'🔍',text:'Local SEO'},
     {em:'📱',text:'Social Media'},{em:'🎉',text:'Festive Offers'},
+  ],
+  'Office Furniture & Seating': [
+    {em:'🪑',text:'Ergonomic Seating'},{em:'🏢',text:'Office Space Setup'},
+    {em:'📦',text:'Bulk & Corporate Orders'},{em:'🛋️',text:'Lounge & Reception Furniture'},
+    {em:'⭐',text:'Client Projects'},{em:'🎉',text:'Seasonal Offers'},
+  ],
+  'Furniture Store (Home)': [
+    {em:'🛋️',text:'Living Room Ideas'},{em:'🛏️',text:'Bedroom Furniture'},
+    {em:'🍽️',text:'Dining Sets'},{em:'🪵',text:'Materials & Care'},
+    {em:'⭐',text:'Customer Homes'},{em:'🎉',text:'Sale & Offers'},
+  ],
+  'Interior Design': [
+    {em:'🎨',text:'Design Ideas'},{em:'🏠',text:'Home Interiors'},
+    {em:'🏢',text:'Office Interiors'},{em:'📐',text:'Space Planning'},
+    {em:'⭐',text:'Completed Projects'},{em:'💡',text:'Design Trends'},
+  ],
+  'Construction & Contractors': [
+    {em:'🏗️',text:'Ongoing Projects'},{em:'🧱',text:'Materials & Quality'},
+    {em:'📐',text:'Planning Tips'},{em:'✅',text:'Completed Projects'},
+    {em:'🦺',text:'Safety Standards'},{em:'💬',text:'Client Reviews'},
+  ],
+  'Manufacturing & Industrial': [
+    {em:'🏭',text:'Manufacturing Capabilities'},{em:'⚙️',text:'Product Range'},
+    {em:'✅',text:'Quality Standards'},{em:'📦',text:'Bulk Orders'},
+    {em:'🚚',text:'Delivery & Logistics'},{em:'🤝',text:'Industries We Serve'},
+  ],
+  'Wholesale / B2B Supplier': [
+    {em:'📦',text:'Bulk Orders'},{em:'🏷️',text:'Product Range'},
+    {em:'🚚',text:'Pan-India Delivery'},{em:'🤝',text:'Dealer Enquiries'},
+    {em:'✅',text:'Quality Assurance'},{em:'🎉',text:'Trade Offers'},
+  ],
+  'Retail Store': [
+    {em:'🛍️',text:'New Arrivals'},{em:'🏷️',text:'Offers & Deals'},
+    {em:'⭐',text:'Best Sellers'},{em:'🎁',text:'Gift Ideas'},
+    {em:'🕐',text:'Store Timings'},{em:'💬',text:'Customer Reviews'},
+  ],
+  'Clothing & Fashion': [
+    {em:'👗',text:'New Collection'},{em:'🧵',text:'Style Tips'},
+    {em:'🎉',text:'Festive Wear'},{em:'🏷️',text:'Sale & Offers'},
+    {em:'⭐',text:'Customer Looks'},{em:'📏',text:'Fit & Size Guide'},
+  ],
+  'Jewellery': [
+    {em:'💍',text:'New Designs'},{em:'👰',text:'Bridal Collection'},
+    {em:'🪙',text:'Gold & Silver Care'},{em:'🎉',text:'Festive Offers'},
+    {em:'⭐',text:'Customer Moments'},{em:'🔍',text:'Certified Quality'},
+  ],
+  'Restaurant / Café': [
+    {em:'🍽️',text:'Daily Specials'},{em:'👨‍🍳',text:'Chef Highlights'},
+    {em:'⭐',text:'Customer Reviews'},{em:'🎉',text:'Festive Menu'},
+    {em:'🍕',text:'New Dishes'},{em:'🕐',text:'Opening Hours'},
+  ],
+  'Hotel & Resort': [
+    {em:'🛏️',text:'Rooms & Stays'},{em:'🍽️',text:'Dining'},
+    {em:'🎉',text:'Events & Weddings'},{em:'📍',text:'Nearby Attractions'},
+    {em:'⭐',text:'Guest Reviews'},{em:'🏷️',text:'Holiday Packages'},
   ],
   'Dental Clinic': [
     {em:'🦷',text:'Dental Care Tips'},{em:'😁',text:'Teeth Whitening'},
     {em:'👶',text:'Kids Dentistry'},{em:'🦴',text:'Implants & Braces'},
     {em:'⭐',text:'Patient Stories'},{em:'🎉',text:'Special Offers'},
   ],
-  'Restaurant / Café': [
-    {em:'🍽️',text:'Daily Specials'},{em:'👨‍🍳',text:'Chef Highlights'},
-    {em:'⭐',text:'Customer Reviews'},{em:'🎉',text:'Festive Menu'},
-    {em:'🍕',text:'New Dishes'},{em:'🕐',text:'Opening Hours'},
+  'Medical Clinic / Hospital': [
+    {em:'🏥',text:'Health Tips'},{em:'💊',text:'Treatment Info'},
+    {em:'⭐',text:'Patient Stories'},{em:'📅',text:'Consultation Hours'},
+    {em:'🔬',text:'New Treatments'},{em:'🎉',text:'Health Camps'},
   ],
   'Salon & Spa': [
     {em:'💇',text:'Hair Tips'},{em:'💅',text:'Nail Art & Trends'},
@@ -591,17 +684,59 @@ const TOPIC_PRESETS = {
     {em:'💰',text:'Investment Tips'},{em:'🔑',text:'Buying Guide'},
     {em:'⭐',text:'Client Testimonials'},{em:'📈',text:'Market Updates'},
   ],
-  'Medical Clinic': [
-    {em:'🏥',text:'Health Tips'},{em:'💊',text:'Treatment Info'},
-    {em:'⭐',text:'Patient Stories'},{em:'📅',text:'Consultation Hours'},
-    {em:'🔬',text:'New Treatments'},{em:'🎉',text:'Health Camps'},
-  ],
   'Education / Coaching': [
     {em:'📚',text:'Study Tips'},{em:'🎓',text:'Student Success'},
     {em:'📅',text:'Batch Schedule'},{em:'✍️',text:'Exam Preparation'},
     {em:'🏆',text:'Top Results'},{em:'🎉',text:'Admissions Open'},
   ],
+  'Automobile Sales & Service': [
+    {em:'🚗',text:'New Arrivals'},{em:'🔧',text:'Service Tips'},
+    {em:'🛞',text:'Maintenance Reminders'},{em:'🏷️',text:'Offers'},
+    {em:'⭐',text:'Happy Customers'},{em:'📅',text:'Book a Service'},
+  ],
+  'IT & Software Services': [
+    {em:'💻',text:'Our Services'},{em:'🤖',text:'Tech Tips'},
+    {em:'☁️',text:'Cloud & Security'},{em:'🚀',text:'Case Studies'},
+    {em:'🤝',text:'Industries We Serve'},{em:'📈',text:'Digital Transformation'},
+  ],
+  'Professional Services (CA / Legal / Consulting)': [
+    {em:'📑',text:'Compliance Updates'},{em:'💼',text:'Our Services'},
+    {em:'💡',text:'Expert Tips'},{em:'📅',text:'Deadlines & Reminders'},
+    {em:'⭐',text:'Client Stories'},{em:'🤝',text:'Consultations'},
+  ],
+  'Travel Agency': [
+    {em:'✈️',text:'Tour Packages'},{em:'🏝️',text:'Destinations'},
+    {em:'🧳',text:'Travel Tips'},{em:'🎉',text:'Seasonal Deals'},
+    {em:'⭐',text:'Traveller Stories'},{em:'🛂',text:'Visa Help'},
+  ],
+  'Event Management': [
+    {em:'🎉',text:'Event Highlights'},{em:'💒',text:'Weddings'},
+    {em:'🏢',text:'Corporate Events'},{em:'🎨',text:'Decor Ideas'},
+    {em:'⭐',text:'Client Stories'},{em:'📅',text:'Booking Season'},
+  ],
+  'Home Services (Plumbing / Electrical / Cleaning)': [
+    {em:'🔧',text:'Service Tips'},{em:'🏠',text:'Home Maintenance'},
+    {em:'⚡',text:'Emergency Help'},{em:'✅',text:'Completed Jobs'},
+    {em:'⭐',text:'Customer Reviews'},{em:'🏷️',text:'Offers'},
+  ],
+  'Pet Care / Veterinary': [
+    {em:'🐶',text:'Pet Care Tips'},{em:'💉',text:'Vaccination Reminders'},
+    {em:'✂️',text:'Grooming'},{em:'🥣',text:'Pet Nutrition'},
+    {em:'⭐',text:'Happy Pets'},{em:'🏥',text:'Clinic Services'},
+  ],
 };
+const GENERIC_TOPICS = [
+  {em:'🛠️',text:'Products & Services'},{em:'⭐',text:'Customer Stories'},
+  {em:'💡',text:'Tips & Advice'},{em:'🏆',text:'Why Choose Us'},
+  {em:'📸',text:'Behind the Scenes'},{em:'🎉',text:'Offers & Updates'},
+];
+const INDUSTRY_ALIASES = { 'Digital Marketing': 'Digital Marketing Agency', 'Medical Clinic': 'Medical Clinic / Hospital' };
+function presetFor(industry) {
+  return TOPIC_PRESETS[INDUSTRY_ALIASES[industry] || industry] || null;
+}
+function topicsFor(industry) {
+  return (presetFor(industry) || GENERIC_TOPICS).map(t => ({ ...t }));
+}
 
 // ── State ──
 let isActive = true;
@@ -609,8 +744,8 @@ let currentSha = null;
 let businesses = [
   {
     id: 'dh360', name: 'Digital Hub 360', websiteUrl: 'https://digitalhub360.in',
-    category: 'Digital Marketing',
-    topics: TOPIC_PRESETS['Digital Marketing'].map(t => ({...t}))
+    category: 'Digital Marketing Agency',
+    topics: topicsFor('Digital Marketing Agency')
   }
 ];
 let activeBizId = 'dh360';
@@ -664,7 +799,7 @@ function toggleTopic(chip) {
 // ── Per-business topics ──
 function renderTopics(biz) {
   const grid = document.getElementById('topicsGrid');
-  const topics = biz.topics || TOPIC_PRESETS['Digital Marketing'];
+  const topics = biz.topics || topicsFor(biz.category);
   grid.innerHTML = topics.map(t => {
     const on = t.on !== false;
     return `<label class="topic-chip${on ? ' on' : ''}" onclick="toggleTopic(this)">
@@ -791,9 +926,82 @@ function switchBusiness(id) {
   document.getElementById('websiteUrl').value = biz.websiteUrl || '';
   document.getElementById('topbarTitle').textContent = `GMB Poster — ${biz.name}`;
   renderTopics(biz);
+  renderProfile(biz);
   renderBrand(biz);
   renderBizList();
 }
+
+// ── Business profile: industry, notes, keywords ──
+function currentBiz() { return businesses.find(b => b.id === activeBizId); }
+
+function renderProfile(biz) {
+  document.getElementById('bizIndustry').value = INDUSTRY_ALIASES[biz.category] || biz.category || '';
+  document.getElementById('bizNotes').value = biz.notes || '';
+  renderKeywords(biz);
+}
+
+function onIndustryInput() {
+  currentBiz().category = document.getElementById('bizIndustry').value.trim();
+}
+
+function onNotesInput() {
+  currentBiz().notes = document.getElementById('bizNotes').value.trim();
+}
+
+function loadIndustryTopics() {
+  const biz = currentBiz();
+  const industry = document.getElementById('bizIndustry').value.trim();
+  biz.category = industry;
+  biz.topics = topicsFor(industry);
+  renderTopics(biz);
+  showToast(presetFor(industry) ? `✓ Topics set for ${industry} — Save & Apply to keep` : '✓ General topics loaded — edit them or add your own', 'ok');
+}
+
+function renderKeywords(biz) {
+  const list = document.getElementById('kwList');
+  list.innerHTML = '';
+  (biz.keywords || []).forEach((kw, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'kw';
+    chip.textContent = kw;
+    const x = document.createElement('button');
+    x.textContent = '×';
+    x.title = 'Remove keyword';
+    x.onclick = e => { e.stopPropagation(); biz.keywords.splice(i, 1); renderKeywords(biz); };
+    chip.appendChild(x);
+    list.appendChild(chip);
+  });
+}
+
+function addKeywords(text) {
+  const biz = currentBiz();
+  biz.keywords = biz.keywords || [];
+  const have = new Set(biz.keywords.map(k => k.toLowerCase()));
+  text.split(/[\n,;]+/).map(k => k.trim().replace(/\s+/g, ' ')).filter(Boolean).forEach(k => {
+    if (!have.has(k.toLowerCase()) && k.length <= 80) { biz.keywords.push(k); have.add(k.toLowerCase()); }
+  });
+  renderKeywords(biz);
+}
+
+function onKwKey(e) {
+  const input = e.target;
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    addKeywords(input.value);
+    input.value = '';
+  } else if (e.key === 'Backspace' && !input.value) {
+    const biz = currentBiz();
+    if (biz.keywords && biz.keywords.length) { biz.keywords.pop(); renderKeywords(biz); }
+  }
+}
+
+function onKwPaste(e) {
+  const text = (e.clipboardData || window.clipboardData).getData('text');
+  if (/[\n,;]/.test(text)) { e.preventDefault(); addKeywords(text); }
+}
+
+document.getElementById('industryList').innerHTML =
+  Object.keys(TOPIC_PRESETS).map(k => `<option value="${k.replace(/"/g, '&quot;')}"></option>`).join('');
 
 // ── Brand: logo + colours ──
 const DEFAULT_BRAND = { primary: '#2563EB', secondary: '#F59E0B' };
@@ -915,7 +1123,7 @@ function onLogoPicked(input) {
 function openModal() {
   document.getElementById('newBizName').value = '';
   document.getElementById('newBizUrl').value = '';
-  document.getElementById('newBizCategory').value = 'Digital Marketing';
+  document.getElementById('newBizIndustry').value = '';
   document.getElementById('addBizModal').classList.add('open');
   setTimeout(() => document.getElementById('newBizName').focus(), 100);
 }
@@ -925,16 +1133,16 @@ function handleModalClick(e) { if (e.target === document.getElementById('addBizM
 function confirmAddBusiness() {
   const name = document.getElementById('newBizName').value.trim();
   const url = document.getElementById('newBizUrl').value.trim();
-  const category = document.getElementById('newBizCategory').value;
+  const category = document.getElementById('newBizIndustry').value.trim() || 'Other';
   if (!name) { document.getElementById('newBizName').focus(); return; }
   if (!url) { document.getElementById('newBizUrl').focus(); return; }
   const id = 'biz_' + Date.now();
-  const topics = (TOPIC_PRESETS[category] || TOPIC_PRESETS['Digital Marketing']).map(t => ({...t}));
-  businesses.push({ id, name, websiteUrl: url, category, topics });
+  const topics = topicsFor(category);
+  businesses.push({ id, name, websiteUrl: url, category, topics, keywords: [] });
   closeModal();
   renderBizList();
   switchBusiness(id);
-  showToast(`✓ "${name}" added with ${category} topics — save to apply`, 'ok');
+  showToast(`✓ "${name}" added — add keywords, logo, then Save & Apply`, 'ok');
 }
 
 // ── Apply config to UI ──
@@ -960,10 +1168,10 @@ function applyConfig(cfg) {
     businesses = cfg.businesses.map(b => {
       if (!b.topics || !b.topics.length) {
         // Migrate: build topics from saved global topics string array or preset
-        const preset = TOPIC_PRESETS[b.category] || TOPIC_PRESETS['Digital Marketing'];
+        const preset = topicsFor(b.category);
         if (cfg.topics && Array.isArray(cfg.topics) && b.id === (cfg.activeBusiness || 'dh360')) {
           b.topics = cfg.topics.map(text => {
-            const match = Object.values(TOPIC_PRESETS).flat().find(t => t.text === text);
+            const match = [...Object.values(TOPIC_PRESETS).flat(), ...GENERIC_TOPICS].find(t => t.text === text);
             return match ? {...match} : {em:'📌', text};
           });
         } else {
@@ -979,7 +1187,7 @@ function applyConfig(cfg) {
       if (cfg.websiteUrl) biz.websiteUrl = cfg.websiteUrl;
       if (cfg.topics && Array.isArray(cfg.topics)) {
         biz.topics = cfg.topics.map(text => {
-          const match = Object.values(TOPIC_PRESETS).flat().find(t => t.text === text);
+          const match = [...Object.values(TOPIC_PRESETS).flat(), ...GENERIC_TOPICS].find(t => t.text === text);
           return match ? {...match} : {em:'📌', text};
         });
       }
@@ -990,6 +1198,7 @@ function applyConfig(cfg) {
     document.getElementById('topbarTitle').textContent = `GMB Poster — ${activeBiz.name}`;
     document.getElementById('websiteUrl').value = activeBiz.websiteUrl || cfg.websiteUrl || '';
     renderTopics(activeBiz);
+    renderProfile(activeBiz);
     renderBrand(activeBiz);
   }
   currentSha = cfg._sha || null;
@@ -1004,11 +1213,11 @@ async function loadSettings() {
     if (r.ok) { const cfg = await r.json(); applyConfig(cfg); }
     else {
       const activeBiz = businesses.find(b => b.id === activeBizId);
-      if (activeBiz) { renderTopics(activeBiz); renderBrand(activeBiz); }
+      if (activeBiz) { renderTopics(activeBiz); renderProfile(activeBiz); renderBrand(activeBiz); }
     }
   } catch (e) {
     const activeBiz = businesses.find(b => b.id === activeBizId);
-    if (activeBiz) { renderTopics(activeBiz); renderBrand(activeBiz); }
+    if (activeBiz) { renderTopics(activeBiz); renderProfile(activeBiz); renderBrand(activeBiz); }
   }
   document.getElementById('loading').style.display = 'none';
   renderBizList();
