@@ -6,7 +6,7 @@
     "Fri",
     "Sat"
   ],
-  "time": "17:40",
+  "time": "18:00",
   "postsPerWeek": 4,
   "topics": [
     "Ergonomic Seating",
@@ -21,7 +21,7 @@
     "Bulk & Corporate Orders"
   ],
   "autoPost": true,
-  "whatsappApproval": true,
+  "whatsappApproval": false,
   "includeImage": true,
   "learnMore": true,
   "websiteUrl": "https://www.xcellentchairs.com/",
@@ -67,7 +67,21 @@
         "secondary": "#073389"
       },
       "logoPath": "logos/dh360.png",
-      "logoVersion": 1790767560029
+      "logoVersion": 1790767560029,
+      "schedule": {
+        "active": true,
+        "days": [
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "time": "17:40",
+        "postsPerWeek": 4,
+        "autoPost": true,
+        "includeImage": true,
+        "learnMore": true
+      }
     },
     {
       "id": "biz_1790751484535",
@@ -111,6 +125,20 @@
       "brand": {
         "primary": "#11CFE7",
         "secondary": "#3379BD"
+      },
+      "schedule": {
+        "active": true,
+        "days": [
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "time": "17:40",
+        "postsPerWeek": 4,
+        "autoPost": true,
+        "includeImage": true,
+        "learnMore": true
       }
     },
     {
@@ -196,9 +224,23 @@
         "secondary": "#2D3685"
       },
       "logoPath": "logos/biz_1790768944429.png",
-      "logoVersion": 1790769061697
+      "logoVersion": 1790769061697,
+      "schedule": {
+        "active": true,
+        "days": [
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "time": "18:00",
+        "postsPerWeek": 4,
+        "autoPost": true,
+        "includeImage": true,
+        "learnMore": true
+      }
     }
   ],
   "activeBusiness": "biz_1790768944429",
-  "updatedAt": "2026-09-30T12:04:17.623Z"
+  "updatedAt": "2026-09-30T12:21:56.748Z"
 }
