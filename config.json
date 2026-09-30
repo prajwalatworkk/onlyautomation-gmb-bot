@@ -65,37 +65,6 @@
       "logoVersion": 1790767560029
     },
     {
-      "id": "biz_1790597105873",
-      "name": "Xcellent Seating Systems",
-      "websiteUrl": "https://www.xcellentchairs.com/",
-      "topics": [
-        {
-          "em": "🎯",
-          "text": "Google Ads Tips"
-        },
-        {
-          "em": "📈",
-          "text": "Lead Generation"
-        },
-        {
-          "em": "🌐",
-          "text": "Website Design"
-        },
-        {
-          "em": "🔍",
-          "text": "Local SEO"
-        },
-        {
-          "em": "📱",
-          "text": "Social Media"
-        },
-        {
-          "em": "🎉",
-          "text": "Festive Offers"
-        }
-      ]
-    },
-    {
       "id": "biz_1790751484535",
       "name": "Just Assign",
       "websiteUrl": "https://www.justassign.com/",
@@ -141,5 +110,5 @@
     }
   ],
   "activeBusiness": "dh360",
-  "updatedAt": "2026-09-30T11:26:05.765Z"
+  "updatedAt": "2026-09-30T11:31:53.637Z"
 }
