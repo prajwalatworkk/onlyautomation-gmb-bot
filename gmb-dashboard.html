@@ -49,6 +49,10 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 .biz-item.active .biz-name { color: var(--accent); }
 .biz-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
 .biz-dot.off { background: var(--text-3); }
+.biz-remove { width: 20px; height: 20px; border-radius: 5px; border: none; background: none; color: var(--text-3); font-size: 15px; line-height: 1; cursor: pointer; display: none; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; }
+.biz-remove:hover { color: var(--danger); background: rgba(239,68,68,0.12); }
+.biz-item:hover .biz-remove { display: flex; }
+.biz-item:hover .biz-dot { display: none; }
 .add-biz-btn { display: flex; align-items: center; gap: 7px; padding: 7px 8px; border-radius: 7px; cursor: pointer; color: var(--text-3); font-size: 12px; font-weight: 500; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; margin-top: 2px; }
 .add-biz-btn:hover { color: var(--accent); background: var(--accent-dim); }
 
@@ -270,6 +274,20 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
     <div class="modal-foot">
       <button class="btn btn-primary" onclick="confirmAddBusiness()">Add Business</button>
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- REMOVE BUSINESS MODAL -->
+<div class="modal-overlay" id="removeBizModal" onclick="if (event.target === this) closeRemoveModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">Remove <span id="removeBizName"></span>?</div>
+      <div class="modal-sub">The bot stops posting for this business and its topics, logo and colours are deleted from the dashboard. Posts already published on Google stay as they are.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger-ghost" id="removeBizBtn" onclick="confirmRemoveBusiness()">Remove business</button>
+      <button class="btn btn-ghost" onclick="closeRemoveModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -717,12 +735,52 @@ function renderBizList() {
     div.className = 'biz-item' + (isActiveBiz ? ' active' : '');
     div.onclick = () => switchBusiness(biz.id);
     div.innerHTML = `
-      <div class="biz-avatar${isActiveBiz ? ' active-biz' : ''}">${initials}</div>
-      <div class="biz-name">${biz.name}</div>
+      <div class="biz-avatar${isActiveBiz ? ' active-biz' : ''}"></div>
+      <div class="biz-name"></div>
       <div class="biz-dot${isActive ? '' : ' off'}"></div>
+      <button class="biz-remove" title="Remove business" aria-label="Remove business">×</button>
     `;
+    div.querySelector('.biz-avatar').textContent = initials;
+    div.querySelector('.biz-name').textContent = biz.name;
+    div.querySelector('.biz-remove').onclick = e => { e.stopPropagation(); askRemoveBusiness(biz.id); };
     container.appendChild(div);
   });
+}
+
+// ── Remove business ──
+let pendingRemoveId = null;
+
+function askRemoveBusiness(id) {
+  if (businesses.length <= 1) { showToast('✗ Keep at least one business in the dashboard.', 'err'); return; }
+  const biz = businesses.find(b => b.id === id);
+  if (!biz) return;
+  pendingRemoveId = id;
+  document.getElementById('removeBizName').textContent = biz.name;
+  document.getElementById('removeBizModal').classList.add('open');
+}
+
+function closeRemoveModal() {
+  pendingRemoveId = null;
+  document.getElementById('removeBizModal').classList.remove('open');
+}
+
+async function confirmRemoveBusiness() {
+  const id = pendingRemoveId;
+  const idx = businesses.findIndex(b => b.id === id);
+  if (idx < 0) return closeRemoveModal();
+  const btn = document.getElementById('removeBizBtn');
+  btn.disabled = true; btn.textContent = 'Removing…';
+  const removed = businesses[idx];
+  const wasActive = id === activeBizId;
+  businesses.splice(idx, 1);
+  if (wasActive) switchBusiness(businesses[0].id); else renderBizList();
+  const ok = await saveSettings(`✓ "${removed.name}" removed.`);
+  if (!ok) {
+    businesses.splice(idx, 0, removed);
+    if (wasActive) switchBusiness(id); else renderBizList();
+  }
+  btn.disabled = false; btn.textContent = 'Remove business';
+  closeRemoveModal();
 }
 
 function switchBusiness(id) {
@@ -958,7 +1016,7 @@ async function loadSettings() {
 }
 
 // ── Save settings ──
-async function saveSettings() {
+async function saveSettings(successMsg) {
   // Save current chip state (on/off) back into the active business
   const activeBiz = businesses.find(b => b.id === activeBizId);
   if (activeBiz) {
@@ -976,6 +1034,7 @@ async function saveSettings() {
 
   const btn = document.getElementById('saveBtn');
   btn.disabled = true; btn.textContent = 'Saving…';
+  let ok = false;
 
   // top-level topics = selected topics of active biz (bot reads this)
   const selectedTopics = (activeBiz?.topics || []).filter(t => t.on !== false).map(t => t.text);
@@ -999,9 +1058,10 @@ async function saveSettings() {
     const r = await fetch('/api/config', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(config, (k, v) => k.startsWith('_') && k !== '_sha' ? undefined : v) });
     const data = await r.json();
     if (r.ok && data.ok) {
-      showToast('✓ Saved! Bot will follow new settings on next run.', 'ok');
+      showToast(successMsg || '✓ Saved! Bot will follow new settings on next run.', 'ok');
       const r2 = await fetch('/api/config');
       if (r2.ok) { const cfg = await r2.json(); currentSha = cfg._sha || null; }
+      ok = true;
     } else {
       showToast('✗ ' + (data.error || 'Save failed'), 'err');
     }
@@ -1009,6 +1069,7 @@ async function saveSettings() {
     showToast('✗ Could not reach API', 'err');
   }
   btn.disabled = false; btn.textContent = 'Save & Apply';
+  return ok;
 }
 
 function resetSettings() {
