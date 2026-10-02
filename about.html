@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>About Us — onlyautomation.in</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
 <style>
 :root {
@@ -22,8 +24,6 @@ nav {
   background: rgba(7,9,15,0.85); backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(28,42,66,0.6);
 }
-.nav-brand { font-size: 15px; font-weight: 700; text-decoration: none; color: var(--text); }
-.nav-brand span { color: var(--accent); }
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .nav-links a { text-decoration: none; color: var(--text-2); font-size: 14px; font-weight: 450; padding: 6px 14px; border-radius: 7px; transition: all 0.15s; }
 .nav-links a:hover { color: var(--text); background: var(--surface-2); }
@@ -66,8 +66,6 @@ footer {
   display: flex; align-items: center; justify-content: space-between;
   max-width: 720px; margin: 0 auto; flex-wrap: wrap; gap: 12px;
 }
-.footer-brand { font-size: 13px; font-weight: 600; }
-.footer-brand span { color: var(--accent); }
 .footer-links { display: flex; gap: 20px; }
 .footer-links a { font-size: 13px; color: var(--text-3); text-decoration: none; }
 .footer-links a:hover { color: var(--text-2); }
@@ -79,12 +77,21 @@ footer {
   .values-grid { grid-template-columns: 1fr; }
   footer { padding: 24px 20px; }
 }
+.nav-brand { display: flex; align-items: center; text-decoration: none; }
+.nav-brand img { height: 26px; width: auto; display: block; }
+.footer-brand { display: inline-flex; align-items: center; text-decoration: none; }
+.footer-brand img { height: 20px; width: auto; display: block; }
+@media (max-width: 640px) {
+  .nav-brand img { height: 18px; }
+  .nav-links { gap: 0; }
+  .nav-links a { padding: 6px 8px; font-size: 13px; }
+}
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="/" class="nav-brand">only<span>automation</span>.in</a>
+  <a href="/" class="nav-brand"><img src="/assets/logo-dark.png" alt="onlyautomation" width="197" height="26"></a>
   <div class="nav-links">
     <a href="/">Home</a>
     <a href="/tools">Tools</a>
@@ -149,7 +156,7 @@ footer {
 </div>
 
 <footer>
-  <div class="footer-brand">only<span>automation</span>.in</div>
+  <a href="/" class="footer-brand"><img src="/assets/logo-dark.png" alt="onlyautomation" width="151" height="20"></a>
   <div class="footer-links">
     <a href="/">Home</a>
     <a href="/tools">Tools</a>

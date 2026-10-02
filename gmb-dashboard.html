@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LocalPulse — GMB Dashboard · onlyautomation.in</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 :root {
@@ -21,11 +23,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 
 /* SIDEBAR */
 .sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-.brand { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.brand-mark { width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(135deg, #4F8EF7 0%, #9B5CF0 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.brand-mark svg { width: 16px; height: 16px; }
-.brand-name { font-size: 12.5px; font-weight: 650; letter-spacing: -0.1px; color: var(--text); line-height: 1.2; }
-.brand-tld { color: var(--accent); }
+.brand-logo { height: 22px; width: auto; display: block; }
+.brand { text-decoration: none; padding: 18px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 
 .nav-section { padding: 12px 10px 4px; flex-shrink: 0; }
 .nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.7px; color: var(--text-3); text-transform: uppercase; padding: 0 8px; margin-bottom: 4px; display: block; }
@@ -303,16 +302,9 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-  <div class="brand">
-    <div class="brand-mark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-      </svg>
-    </div>
-    <div>
-      <div class="brand-name">only<span class="brand-tld">automation</span>.in</div>
-    </div>
-  </div>
+  <a class="brand" href="/" title="Go to onlyautomation.in home">
+    <img src="/assets/logo-dark.png" alt="onlyautomation" class="brand-logo">
+  </a>
 
   <!-- BUSINESSES -->
   <div class="biz-section">
