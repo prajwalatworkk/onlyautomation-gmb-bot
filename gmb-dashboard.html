@@ -64,7 +64,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
 .footer-domain { font-size: 11px; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
 .sidebar-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.logout-link { font-size: 12.5px; font-weight: 600; color: var(--text-2); text-decoration: none; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--border); }
+.logout-link { white-space: nowrap; font-size: 12.5px; font-weight: 600; color: var(--text-2); text-decoration: none; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--border); }
 .logout-link:hover { color: var(--danger); border-color: rgba(220,38,38,0.3); }
 .topbar-logout { display: none; }
 @media (max-width: 640px) { .topbar-logout { display: inline-block; margin-right: 8px; } }
@@ -201,6 +201,18 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
 .kw button:hover { opacity: 1; color: var(--danger); }
 .kw-input { flex: 1; min-width: 200px; background: none; border: none; outline: none; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; padding: 4px; }
 .kw-input::placeholder { color: var(--text-3); }
+
+/* PLAN */
+.plan-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.plan-opt { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 14px 16px 14px 44px; border-radius: 10px; border: 1.5px solid var(--border-2); background: var(--surface); cursor: pointer; transition: border-color .15s, background-color .15s; }
+.plan-opt:hover { border-color: var(--accent); }
+.plan-opt input { position: absolute; left: 16px; top: 17px; accent-color: var(--accent); width: 16px; height: 16px; }
+.plan-opt:has(input:checked) { border-color: var(--accent); background: var(--accent-dim); }
+.plan-name { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.plan-desc { font-size: 12px; color: var(--text-2); line-height: 1.45; }
+.pro-tag { font-size: 10px; font-weight: 800; letter-spacing: .06em; padding: 2px 7px; border-radius: 6px; background: linear-gradient(115deg, #0062F9, #1E9BFF); color: #fff; }
+.biz-pro { font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 1px 5px; border-radius: 5px; background: linear-gradient(115deg, #0062F9, #1E9BFF); color: #fff; flex-shrink: 0; }
+@media (max-width: 640px) { .plan-opts { grid-template-columns: 1fr; } }
 
 /* BRAND */
 .brand-row { display: flex; gap: 20px; align-items: center; }
@@ -443,6 +455,22 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
         <div class="card-hint">What the AI writes about</div>
       </div>
       <div class="card-body profile-body">
+        <div class="field-group">
+          <label class="field-label">Plan</label>
+          <div class="plan-opts" role="radiogroup" aria-label="Plan">
+            <label class="plan-opt">
+              <input type="radio" name="bizPlan" value="standard" onchange="onPlanChange(this.value)">
+              <span class="plan-name">Standard</span>
+              <span class="plan-desc">Branded template image with the client's logo &amp; colours · fast AI writing · no extra cost</span>
+            </label>
+            <label class="plan-opt">
+              <input type="radio" name="bizPlan" value="premium" onchange="onPlanChange(this.value)">
+              <span class="plan-name">Premium <span class="pro-tag">PRO</span></span>
+              <span class="plan-desc">Real AI photo in every post · best AI writing (Gemini Pro) · about ₹4–5 per post</span>
+            </label>
+          </div>
+          <div class="field-hint" id="planHint">Premium needs Gemini billing switched on. Without it, Premium posts automatically use Standard images and writing.</div>
+        </div>
         <div class="field-group">
           <label class="field-label">Industry</label>
           <div class="industry-row">
@@ -888,6 +916,7 @@ function renderBizList() {
     div.innerHTML = `
       <div class="biz-avatar${isActiveBiz ? ' active-biz' : ''}"></div>
       <div class="biz-name"></div>
+      ${biz.plan === 'premium' ? '<span class="biz-pro">PRO</span>' : ''}
       <div class="biz-dot${(isActiveBiz ? isActive : (biz.schedule ? biz.schedule.active !== false : true)) ? '' : ' off'}"></div>
       <button class="biz-remove" title="Remove business" aria-label="Remove business">×</button>
     `;
@@ -954,9 +983,17 @@ function switchBusiness(id) {
 function currentBiz() { return businesses.find(b => b.id === activeBizId); }
 
 function renderProfile(biz) {
+  const plan = biz.plan === 'premium' ? 'premium' : 'standard';
+  document.querySelectorAll('input[name="bizPlan"]').forEach(r => { r.checked = r.value === plan; });
   document.getElementById('bizIndustry').value = INDUSTRY_ALIASES[biz.category] || biz.category || '';
   document.getElementById('bizNotes').value = biz.notes || '';
   renderKeywords(biz);
+}
+
+function onPlanChange(value) {
+  currentBiz().plan = value;
+  renderBizList();
+  showToast(value === 'premium' ? 'Premium selected — Save & Apply to keep' : 'Standard selected — Save & Apply to keep', 'ok');
 }
 
 function onIndustryInput() {
@@ -1219,7 +1256,7 @@ function confirmAddBusiness() {
   if (!url) { document.getElementById('newBizUrl').focus(); return; }
   const id = 'biz_' + Date.now();
   const topics = topicsFor(category);
-  businesses.push({ id, name, websiteUrl: url, category, topics, keywords: [], schedule: { ...SCHEDULE_DEFAULT } });
+  businesses.push({ id, name, websiteUrl: url, category, topics, keywords: [], plan: 'standard', schedule: { ...SCHEDULE_DEFAULT } });
   closeModal();
   renderBizList();
   switchBusiness(id);
