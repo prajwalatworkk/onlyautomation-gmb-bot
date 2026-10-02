@@ -1,6 +1,6 @@
 // Vercel Routing Middleware: the dashboard and its APIs need a login session (or the bot's key).
 export const config = {
-  matcher: ['/gmb-dashboard', '/gmb-dashboard.html', '/api/config', '/api/logo', '/config.json'],
+  matcher: ['/gmb-dashboard', '/gmb-dashboard.html', '/api/config', '/api/logo', '/api/history', '/config.json', '/history.json'],
 };
 
 const COOKIE = 'oa_session';
@@ -41,7 +41,7 @@ export default async function middleware(request) {
   const url = new URL(request.url);
   const isApi = url.pathname.startsWith('/api/');
 
-  if (url.pathname === '/config.json') return new Response('Not found', { status: 404 });
+  if (url.pathname === '/config.json' || url.pathname === '/history.json') return new Response('Not found', { status: 404 });
 
   const password = process.env.DASHBOARD_PASSWORD;
   if (!password) {
