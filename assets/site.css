@@ -245,6 +245,21 @@ ul, ol { list-style: none; }
 .price-note { text-align: center; margin-top: 24px; color: var(--ink-2); font-size: 15px; }
 .price-note a { color: var(--blue); font-weight: 700; }
 
+.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; max-width: 1080px; margin: 0 auto; }
+.plan-card { position: relative; display: flex; flex-direction: column; background: #fff; border: 1px solid var(--border); border-radius: var(--r-xl); padding: 34px 30px; box-shadow: var(--sh-1); }
+.plan-card h3 { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+.plan-for { color: var(--ink-2); font-size: 15px; margin-top: 4px; min-height: 48px; }
+.plan-card .price { margin: 18px 0 4px; }
+.plan-card .price b { font-size: 46px; }
+.price-custom b { font-size: 38px !important; }
+.plan-trial { color: var(--green); font-weight: 700; font-size: 15px; margin-bottom: 22px; }
+.plan-trial-muted { color: var(--ink-3); }
+.plan-card .btn { width: 100%; }
+.plan-card .price-list { margin-top: 26px; padding-top: 24px; }
+.plan-incl { font-weight: 700; color: var(--ink); }
+.plan-featured { border: 2px solid var(--blue); box-shadow: 0 40px 80px -36px rgba(0,98,249,.5); }
+@media (max-width: 1024px) { .plans { grid-template-columns: 1fr; max-width: 520px; } .plan-for { min-height: 0; } }
+
 /* ── FAQ ───────────────────────────────────────────── */
 .faq { max-width: 780px; margin: 0 auto; display: grid; gap: 12px; }
 .faq details { background: #fff; border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--sh-1); transition: border-color .15s; }
