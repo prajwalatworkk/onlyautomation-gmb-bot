@@ -9,10 +9,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
 <style>
 :root {
-  --bg: #07090F; --surface: #0D1220; --surface-2: #131D30;
-  --border: #1C2A42; --accent: #4F8EF7; --accent-dim: rgba(79,142,247,0.1);
-  --success: #10D99A; --text: #DCE9FF; --text-2: #6A82B0; --text-3: #344560;
-  color-scheme: dark;
+  --bg: #F5F8FF; --surface: #FFFFFF; --surface-2: #EEF3FC;
+  --border: #DDE6F4; --accent: #0062F9; --accent-dim: rgba(0,98,249,0.08);
+  --success: #0E9F6E; --text: #011333; --text-2: #4B5B78; --text-3: #8796B0;
+  color-scheme: light;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
@@ -21,8 +21,8 @@ nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 40px; height: 64px;
-  background: rgba(7,9,15,0.85); backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(28,42,66,0.6);
+  background: rgba(255,255,255,0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(1,19,51,0.08);
 }
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .nav-links a { text-decoration: none; color: var(--text-2); font-size: 14px; font-weight: 450; padding: 6px 14px; border-radius: 7px; transition: all 0.15s; }
@@ -86,12 +86,19 @@ footer {
   .nav-links { gap: 0; }
   .nav-links a { padding: 6px 8px; font-size: 13px; }
 }
+body {
+  background:
+    radial-gradient(900px 420px at 12% -4%, rgba(0,98,249,0.10), transparent 70%),
+    radial-gradient(620px 380px at 92% 6%, rgba(30,155,255,0.13), transparent 70%),
+    var(--bg);
+  background-repeat: no-repeat;
+}
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="/" class="nav-brand"><img src="/assets/logo-dark.png" alt="onlyautomation" width="197" height="26"></a>
+  <a href="/" class="nav-brand"><img src="/assets/logo.png" alt="onlyautomation" width="197" height="26"></a>
   <div class="nav-links">
     <a href="/">Home</a>
     <a href="/tools">Tools</a>
@@ -156,7 +163,7 @@ footer {
 </div>
 
 <footer>
-  <a href="/" class="footer-brand"><img src="/assets/logo-dark.png" alt="onlyautomation" width="151" height="20"></a>
+  <a href="/" class="footer-brand"><img src="/assets/logo.png" alt="onlyautomation" width="151" height="20"></a>
   <div class="footer-links">
     <a href="/">Home</a>
     <a href="/tools">Tools</a>
