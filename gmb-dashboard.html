@@ -202,6 +202,13 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
 .kw-input { flex: 1; min-width: 200px; background: none; border: none; outline: none; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; padding: 4px; }
 .kw-input::placeholder { color: var(--text-3); }
 
+/* PLAN SWITCH (top bar) */
+.plan-switch { display: inline-flex; padding: 3px; border-radius: 20px; background: var(--surface-2); border: 1px solid var(--border-2); margin-right: 10px; }
+.plan-switch button { border: none; background: none; font: 600 12.5px 'Inter', sans-serif; color: var(--text-2); padding: 5px 12px; border-radius: 16px; cursor: pointer; }
+.plan-switch button.on { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(1,19,51,.12); }
+.plan-switch button[data-plan="premium"].on { background: linear-gradient(115deg, #0062F9, #1E9BFF); color: #fff; }
+@media (max-width: 640px) { .plan-switch { margin-right: 6px; } .plan-switch button { padding: 5px 9px; } }
+
 /* PLAN */
 .plan-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .plan-opt { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 14px 16px 14px 44px; border-radius: 10px; border: 1.5px solid var(--border-2); background: var(--surface); cursor: pointer; transition: border-color .15s, background-color .15s; }
@@ -384,6 +391,10 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
     </div>
     <div class="topbar-right" style="display:flex;align-items:center">
       <a class="logout-link topbar-logout" href="/api/logout">Log out</a>
+      <div class="plan-switch" role="group" aria-label="Plan for this business">
+        <button type="button" data-plan="standard" onclick="onPlanChange('standard')">Standard</button>
+        <button type="button" data-plan="premium" onclick="onPlanChange('premium')">Premium</button>
+      </div>
       <div class="status-toggle active" id="statusToggle" onclick="toggleStatus()">
         <div class="pulse-dot"></div>
         <span id="statusLabel">Active</span>
@@ -469,7 +480,7 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
               <span class="plan-desc">Real AI photo in every post · best AI writing (Gemini Pro) · about ₹4–5 per post</span>
             </label>
           </div>
-          <div class="field-hint" id="planHint">Premium needs Gemini billing switched on. Without it, Premium posts automatically use Standard images and writing.</div>
+          <div class="field-hint" id="planHint">Standard always uses your free Gemini key — it never costs anything. Premium uses your paid Gemini key; until that key is added to the bot, Premium posts run as Standard for free.</div>
         </div>
         <div class="field-group">
           <label class="field-label">Industry</label>
@@ -985,13 +996,16 @@ function currentBiz() { return businesses.find(b => b.id === activeBizId); }
 function renderProfile(biz) {
   const plan = biz.plan === 'premium' ? 'premium' : 'standard';
   document.querySelectorAll('input[name="bizPlan"]').forEach(r => { r.checked = r.value === plan; });
+  document.querySelectorAll('.plan-switch button').forEach(b => b.classList.toggle('on', b.dataset.plan === plan));
   document.getElementById('bizIndustry').value = INDUSTRY_ALIASES[biz.category] || biz.category || '';
   document.getElementById('bizNotes').value = biz.notes || '';
   renderKeywords(biz);
 }
 
 function onPlanChange(value) {
-  currentBiz().plan = value;
+  const biz = currentBiz();
+  biz.plan = value;
+  renderProfile(biz);
   renderBizList();
   showToast(value === 'premium' ? 'Premium selected — Save & Apply to keep' : 'Standard selected — Save & Apply to keep', 'ok');
 }
