@@ -3,281 +3,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>onlyautomation.in — Automation Tools for Indian Businesses</title>
+<title>onlyautomation.in — Google Business Profile posts on autopilot</title>
+<meta name="description" content="LocalPulse writes, designs and publishes Google Business Profile posts for your business — with your logo, your keywords and your schedule. Built in Bangalore for Indian businesses.">
+<meta name="theme-color" content="#0062F9">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
-<style>
-:root {
-  --bg: #F5F8FF;
-  --surface: #FFFFFF;
-  --surface-2: #EEF3FC;
-  --border: #DDE6F4;
-  --accent: #0062F9;
-  --accent-dim: rgba(0,98,249,0.08);
-  --accent-glow: rgba(0,98,249,0.22);
-  --success: #0E9F6E;
-  --text: #011333;
-  --text-2: #4B5B78;
-  --text-3: #8796B0;
-  color-scheme: light;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
-
-/* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 40px; height: 64px;
-  background: rgba(255,255,255,0.88);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(1,19,51,0.08);
-}
-.nav-links { display: flex; align-items: center; gap: 4px; }
-.nav-links a {
-  text-decoration: none; color: var(--text-2); font-size: 14px; font-weight: 450;
-  padding: 6px 14px; border-radius: 7px; transition: all 0.15s;
-}
-.nav-links a:hover { color: var(--text); background: var(--surface-2); }
-.nav-links a.active { color: var(--text); }
-.nav-cta {
-  text-decoration: none; font-size: 13.5px; font-weight: 600;
-  padding: 8px 18px; border-radius: 8px;
-  background: var(--accent); color: #fff;
-  transition: all 0.15s;
-}
-.nav-cta:hover { background: #0052D6; box-shadow: 0 0 20px var(--accent-glow); }
-
-/* HERO */
-.hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 120px 24px 80px;
-  position: relative; overflow: hidden;
-  background:
-    radial-gradient(900px 480px at 50% -8%, rgba(0,98,249,0.13), transparent 70%),
-    radial-gradient(520px 380px at 88% 32%, rgba(30,155,255,0.14), transparent 70%),
-    radial-gradient(480px 360px at 8% 70%, rgba(0,98,249,0.07), transparent 70%);
-}
-.hero::before {
-  content: '';
-  position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-  width: 800px; height: 600px;
-  background: radial-gradient(ellipse at center, rgba(30,155,255,0.10) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 5px 14px; border-radius: 20px;
-  border: 1px solid rgba(0,98,249,0.3);
-  background: var(--accent-dim);
-  color: var(--accent); font-size: 12.5px; font-weight: 550;
-  margin-bottom: 28px; letter-spacing: 0.2px;
-}
-.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-.hero h1 {
-  font-size: clamp(38px, 7vw, 72px);
-  font-weight: 800; letter-spacing: -2px; line-height: 1.08;
-  margin-bottom: 22px; text-wrap: balance;
-}
-.hero h1 em {
-  font-style: normal;
-  background: linear-gradient(135deg, #0062F9 0%, #1E9BFF 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero p {
-  font-size: clamp(15px, 2vw, 18px); color: var(--text-2);
-  max-width: 520px; margin: 0 auto 40px; font-weight: 400;
-}
-.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.btn-hero {
-  text-decoration: none; font-size: 14.5px; font-weight: 600;
-  padding: 13px 28px; border-radius: 10px; transition: all 0.15s;
-}
-.btn-hero.primary { background: var(--accent); color: #fff; }
-.btn-hero.primary:hover { background: #0052D6; box-shadow: 0 8px 30px var(--accent-glow); transform: translateY(-1px); }
-.btn-hero.ghost { background: var(--surface); color: var(--text-2); border: 1px solid var(--border); }
-.btn-hero.ghost:hover { color: var(--text); border-color: var(--text-3); }
-
-/* TOOLS PREVIEW */
-.section { padding: 80px 24px; max-width: 1060px; margin: 0 auto; }
-.section-label { font-size: 11px; font-weight: 650; letter-spacing: 1.2px; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; }
-.section-title { font-size: clamp(24px, 4vw, 36px); font-weight: 750; letter-spacing: -0.8px; margin-bottom: 8px; }
-.section-sub { font-size: 15px; color: var(--text-2); margin-bottom: 48px; }
-
-.tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.tool-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 14px; padding: 24px; text-decoration: none;
-  color: var(--text); transition: all 0.2s; position: relative; overflow: hidden;
-}
-.tool-card::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, var(--accent-dim), transparent);
-  opacity: 0; transition: opacity 0.2s;
-}
-.tool-card:hover { border-color: rgba(0,98,249,0.4); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(1,19,51,0.10); }
-.tool-card:hover::before { opacity: 1; }
-.tool-card.soon { cursor: default; }
-.tool-card.soon:hover { transform: none; box-shadow: none; border-color: var(--border); }
-.tool-card.soon::before { display: none; }
-
-.tool-icon {
-  width: 44px; height: 44px; border-radius: 11px; margin-bottom: 16px;
-  display: flex; align-items: center; justify-content: center; font-size: 20px;
-}
-.tool-icon.blue { background: rgba(0,98,249,0.12); }
-.tool-icon.purple { background: rgba(30,155,255,0.14); }
-.tool-icon.green { background: rgba(14,159,110,0.12); }
-
-.tool-name { font-size: 16px; font-weight: 650; margin-bottom: 6px; letter-spacing: -0.2px; }
-.tool-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 16px; }
-.tool-status {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11.5px; font-weight: 550; padding: 3px 10px; border-radius: 12px;
-}
-.tool-status.live { background: rgba(14,159,110,0.1); color: var(--success); }
-.tool-status.soon { background: var(--surface-2); color: var(--text-3); border: 1px solid var(--border); }
-
-/* HOW IT WORKS */
-.how { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 24px; }
-.how-inner { max-width: 1060px; margin: 0 auto; }
-.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 48px; }
-.step { text-align: center; }
-.step-num {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: var(--accent-dim); border: 1px solid rgba(0,98,249,0.2);
-  color: var(--accent); font-size: 14px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px;
-}
-.step h3 { font-size: 15px; font-weight: 650; margin-bottom: 8px; }
-.step p { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
-
-/* FOOTER */
-footer {
-  padding: 40px 24px; border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  max-width: 1060px; margin: 0 auto; flex-wrap: wrap; gap: 16px;
-}
-.footer-links { display: flex; gap: 24px; }
-.footer-links a { font-size: 13px; color: var(--text-3); text-decoration: none; transition: color 0.15s; }
-.footer-links a:hover { color: var(--text-2); }
-.footer-copy { font-size: 12px; color: var(--text-3); width: 100%; text-align: center; padding-top: 16px; border-top: 1px solid var(--border); }
-
-/* MOBILE */
-@media (max-width: 700px) {
-  nav { padding: 0 20px; }
-  .nav-cta { display: none; }
-  .tools-grid { grid-template-columns: 1fr; }
-  .steps { grid-template-columns: 1fr; gap: 32px; }
-  footer { flex-direction: column; align-items: flex-start; }
-}
-.nav-brand { display: flex; align-items: center; text-decoration: none; }
-.nav-brand img { height: 26px; width: auto; display: block; }
-.footer-brand { display: inline-flex; align-items: center; text-decoration: none; }
-.footer-brand img { height: 20px; width: auto; display: block; }
-@media (max-width: 640px) {
-  .nav-brand img { height: 18px; }
-  .nav-links { gap: 0; }
-  .nav-links a { padding: 6px 8px; font-size: 13px; }
-}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<nav>
-  <a href="/" class="nav-brand"><img src="/assets/logo.png" alt="onlyautomation" width="197" height="26"></a>
-  <div class="nav-links">
-    <a href="/" class="active">Home</a>
-    <a href="/tools">Tools</a>
-    <a href="/about">About Us</a>
+<header class="site-header">
+  <div class="container nav">
+    <a href="/" class="nav-logo" aria-label="onlyautomation home"><img src="/assets/logo.png" alt="onlyautomation" width="212" height="28"></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/tools">Tools</a>
+      <a href="/about">About</a>
+    </nav>
+    <a class="btn btn-primary btn-sm nav-cta" href="https://wa.me/917892218476?text=Hi%20onlyautomation%2C%20I%27m%20interested%20in%20LocalPulse%20for%20my%20business" target="_blank" rel="noopener">Get started</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu">
+      <svg class="icon icon-open" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg class="icon icon-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
   </div>
-  <a href="/tools" class="nav-cta">Explore Tools →</a>
-</nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/tools">Tools</a>
+    <a href="/about">About</a>
+    <a class="btn btn-primary" href="https://wa.me/917892218476?text=Hi%20onlyautomation%2C%20I%27m%20interested%20in%20LocalPulse%20for%20my%20business" target="_blank" rel="noopener">Get started on WhatsApp</a>
+  </div>
+</header>
+
+<main id="main">
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    Built for Indian SMBs
-  </div>
-  <h1>Let Your Business<br><em>Grow Itself.</em></h1>
-  <p>Smart automation tools that keep your digital presence active — Google, Instagram, WhatsApp — while you focus on running your business.</p>
-  <div class="hero-actions">
-    <a href="/tools" class="btn-hero primary">Explore Tools →</a>
-    <a href="/about" class="btn-hero ghost">About Us</a>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="pill"><span class="pill-tag">Live</span> LocalPulse for Google Business Profile</span>
+      <h1>Let Your Business <span class="grad">Grow Itself.</span></h1>
+      <p class="hero-sub">LocalPulse writes, designs and publishes fresh posts on your Google Business Profile — with your logo, your keywords and your schedule. You run the business. Your profile stays active.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary btn-lg" href="https://wa.me/917892218476?text=Hi%20onlyautomation%2C%20I%27d%20like%20to%20start%20the%201-month%20free%20trial%20of%20LocalPulse" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 3.5 11.5 8.5 8.5 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+          Start 1-month free trial
+        </a>
+        <a class="btn btn-secondary btn-lg" href="#how">See how it works</a>
+      </div>
+      <div class="hero-trust">
+        <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>First month free</span>
+        <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>No password sharing</span>
+        <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Your logo &amp; colours</span>
+        <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Posts on your days</span>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hv-ring"></div>
+      <div class="hv-orb"></div>
+      <div class="gbp-card">
+        <div class="gbp-head">
+          <div class="gbp-av">YB</div>
+          <div><b>Your Business</b><small>Google Business Profile · Just now</small></div>
+          <div class="gbp-pin"><svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        </div>
+        <div class="gbp-img">
+          <span class="gi-brand">YOUR LOGO</span>
+          <span class="gi-kicker">WEEKLY TIP</span>
+          <span class="gi-title">Healthy smiles start with regular check-ups</span>
+          <span class="gi-points"><span>Same-day slots</span><span>Gentle care</span><span>Near you</span></span>
+        </div>
+        <div class="gbp-body">
+          <p>Book your family's dental check-up this week — gentle care, modern equipment and same-day slots close to home.</p>
+          <span class="gbp-btn">Learn more</span>
+        </div>
+      </div>
+      <div class="float f1">
+        <span class="float-ic ic-green"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <div><b>Posted to Google</b><small>Today · 10:00 AM</small></div>
+      </div>
+      <div class="float f2">
+        <span class="float-ic ic-blue"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+        <div><b>Tue · Thu · Sat</b><small>Your posting days</small></div>
+      </div>
+      <div class="float f3">
+        <span class="float-ic ic-sky"><svg class="icon" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.8-9.8M17 6l3 3M14 9l2 2"/></svg></span>
+        <div><b>“dentist near me”</b><small>Keyword in this post</small></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- TOOLS PREVIEW -->
-<div class="section">
-  <div class="section-label">Our Tools</div>
-  <div class="section-title">Automation for every channel</div>
-  <div class="section-sub">One dashboard. All your posting. Zero manual work.</div>
+<!-- INDUSTRIES -->
+<section class="strip" aria-label="Who it's for">
+  <div class="container">
+    <p class="strip-title">Made for local businesses like yours</p>
+    <ul class="chips">
+      <li>🦷 Dental clinics</li>
+      <li>🍽️ Restaurants &amp; cafés</li>
+      <li>💇 Salons &amp; spas</li>
+      <li>🪑 Furniture stores</li>
+      <li>🏋️ Gyms</li>
+      <li>🏠 Real estate</li>
+      <li>🎓 Coaching centres</li>
+      <li>🛠️ Home services</li>
+      <li>📣 Marketing agencies</li>
+    </ul>
+  </div>
+</section>
 
-  <div class="tools-grid">
-    <a href="/gmb-dashboard" class="tool-card">
-      <div class="tool-icon blue">📍</div>
-      <div class="tool-name">LocalPulse</div>
-      <div class="tool-desc">Auto-posts to your Google Business Profile with AI-written content, branded images, and a Learn More button — twice a week, hands-free.</div>
-      <span class="tool-status live">● Live</span>
-    </a>
-    <div class="tool-card soon">
-      <div class="tool-icon purple">📸</div>
-      <div class="tool-name">ReelFlow</div>
-      <div class="tool-desc">Automatically generates and schedules Instagram Reels and posts for your business. Built-in captions, hashtags, and scheduling.</div>
-      <span class="tool-status soon">Coming Soon</span>
+<!-- WHY -->
+<section class="section" id="why">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Why it matters</span>
+      <h2>Customers check your Google profile <span class="grad">before they call.</span></h2>
+      <p>A profile that hasn't posted in months looks closed. Fresh posts show you're open, answer common questions and give people a reason to choose you over the next result.</p>
     </div>
-    <div class="tool-card soon">
-      <div class="tool-icon green">💬</div>
-      <div class="tool-name">ChatDrop</div>
-      <div class="tool-desc">WhatsApp broadcast automation — send promotions, updates, and follow-ups to your customer list on a schedule you control.</div>
-      <span class="tool-status soon">Coming Soon</span>
+    <div class="compare">
+      <div class="cmp cmp-bad reveal">
+        <span class="cmp-badge">Without LocalPulse</span>
+        <div class="listing">
+          <span class="listing-av">YB</span>
+          <div><b>Your Business</b><small class="st-bad">Last post: 8 months ago</small></div>
+        </div>
+        <ul class="cmp-list">
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Posting gets forgotten in busy weeks</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Generic text that nobody searches for</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>No images, or random stock photos</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Hours spent writing and designing</li>
+        </ul>
+      </div>
+      <div class="cmp cmp-good reveal">
+        <span class="cmp-badge">With LocalPulse</span>
+        <div class="listing">
+          <span class="listing-av">YB</span>
+          <div><b>Your Business</b><small class="st-good">● Posted today · Learn more</small></div>
+        </div>
+        <ul class="cmp-list">
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Posts go out on your days, every week</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Written around the keywords you want to be found for</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Images in your own logo and colours</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>No time needed from you after setup</li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
+</section>
+
+<!-- FEATURES -->
+<section class="section section-soft" id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">What you get</span>
+      <h2>Everything your profile needs, <span class="grad">done for you.</span></h2>
+      <p>Every post is written, designed and published for your business — not a template copied across hundreds of profiles.</p>
+    </div>
+    <div class="bento">
+      <article class="card col-4 reveal">
+        <div class="f-split">
+          <div>
+            <div class="f-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></div>
+            <h3>Posts written for your business</h3>
+            <p>LocalPulse reads your website, industry and services, then writes helpful posts around the keywords you want to rank for. Topics rotate, so nothing repeats.</p>
+          </div>
+          <div class="kw-demo" aria-hidden="true">
+            <div class="kw-row"><span class="kw">office chairs Bangalore</span><span class="kw">ergonomic chairs</span></div>
+            <div class="post-mini"><b>Choosing the Right Office Chair</b>Long workdays need support. Our <mark>ergonomic chairs</mark> come with adjustable lumbar support — the reason teams buying <mark>office chairs in Bangalore</mark> choose us…</div>
+          </div>
+        </div>
+      </article>
+      <article class="card col-2 reveal">
+        <div class="f-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2z"/></svg></div>
+        <h3>Your logo, your colours</h3>
+        <p>Every post gets an image in your brand — colours picked straight from your logo.</p>
+        <div class="brand-tiles" aria-hidden="true">
+          <span class="tile t1"><i></i><i></i></span>
+          <span class="tile t2"><i></i><i></i></span>
+          <span class="tile t3"><i></i><i></i></span>
+        </div>
+      </article>
+      <article class="card col-2 reveal">
+        <div class="f-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+        <h3>Your days, your time</h3>
+        <p>Pick the days and the time. Each business can have its own schedule.</p>
+        <div class="week" aria-hidden="true"><span>M</span><span class="on">T</span><span>W</span><span class="on">T</span><span>F</span><span class="on">S</span><span>S</span></div>
+        <span class="time-chip" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>10:00 AM</span>
+      </article>
+      <article class="card col-2 reveal">
+        <div class="f-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></div>
+        <h3>A button to your website</h3>
+        <p>Every post carries a “Learn more” button, so interested customers land on your site.</p>
+        <span class="lm-demo" aria-hidden="true">Learn more <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </article>
+      <article class="card col-2 reveal">
+        <div class="f-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3>No passwords shared</h3>
+        <p>You add our team as a manager on your Google Business Profile. You stay the owner and can remove access anytime.</p>
+      </article>
+      <article class="card col-6 reveal">
+        <div class="f-split">
+          <div>
+            <div class="f-icon"><svg class="icon" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <h3>Ready for many locations</h3>
+            <p>Run several branches or brands? Each one gets its own schedule, keywords, topics and branding — and can be paused on its own.</p>
+          </div>
+          <div class="biz-list" aria-hidden="true">
+            <div class="biz-row"><span class="biz-av" style="background:linear-gradient(135deg,#0062F9,#1E9BFF)">SD</span><div><b>Smile Dental · Jayanagar</b><small>Tue · Thu · Sat at 10:00 AM</small></div><span class="biz-st">Active</span></div>
+            <div class="biz-row"><span class="biz-av" style="background:linear-gradient(135deg,#0B6E79,#11CFE7)">SD</span><div><b>Smile Dental · Indiranagar</b><small>Mon · Wed · Fri at 11:30 AM</small></div><span class="biz-st">Active</span></div>
+            <div class="biz-row"><span class="biz-av" style="background:linear-gradient(135deg,#6A1B2D,#D71434)">SC</span><div><b>Spice Route Café</b><small>Paused for renovation</small></div><span class="biz-st paused">Paused</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
 
 <!-- HOW IT WORKS -->
-<div class="how">
-  <div class="how-inner">
-    <div class="section-label">How It Works</div>
-    <div class="section-title">Set it once. Let it run.</div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Connect Your Account</h3>
-        <p>Link your Google Business Profile, Instagram, or WhatsApp in one click. Your login stays on your device — never shared.</p>
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">How it works</span>
+      <h2>Set it up once. <span class="grad">It runs every week.</span></h2>
+    </div>
+    <ol class="steps">
+      <li class="step reveal"><span class="step-n">1</span><h3>Tell us about your business</h3><p>Your website, industry, services and the keywords you want to rank for — plus your logo.</p></li>
+      <li class="step reveal"><span class="step-n">2</span><h3>Add us as a manager</h3><p>Give our team manager access on your Google Business Profile. No passwords, and you stay the owner.</p></li>
+      <li class="step reveal"><span class="step-n">3</span><h3>Pick your days &amp; time</h3><p>Choose how often you want to post. Change it whenever you like.</p></li>
+      <li class="step reveal"><span class="step-n">4</span><h3>Posts go live</h3><p>Each post is written, designed and published on schedule — automatically.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="section section-soft">
+  <div class="container split">
+    <div class="reveal">
+      <span class="eyebrow">Behind the scenes</span>
+      <h2 class="h2">Managed from one <span class="grad">powerful dashboard.</span></h2>
+      <p class="lead">Every business we post for has its own settings — so each profile sounds like itself.</p>
+      <ul class="check-list">
+        <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Separate schedule for every business</li>
+        <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Industry, services and target keywords</li>
+        <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Logo and brand colours for every image</li>
+        <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Topics that rotate, so posts never repeat</li>
+      </ul>
+      <a class="btn btn-primary" href="#pricing">See pricing <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="browser reveal">
+      <div class="browser-bar"><i></i><i></i><i></i><span class="browser-url">onlyautomation.in</span></div>
+      <img src="/assets/dashboard-preview.webp" alt="The LocalPulse dashboard showing a business's posting schedule, profile and keywords" width="1280" height="800" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Pricing</span>
+      <h2>Simple pricing. <span class="grad">Everything included.</span></h2>
+    </div>
+    <div class="price-wrap reveal">
+      <div class="price-card">
+        <span class="offer">1 month free trial</span>
+        <h3>LocalPulse</h3>
+        <p class="price-desc">Google Business Profile posts on autopilot</p>
+        <div class="price"><b>₹4,999</b><span>/ month</span></div>
+        <p class="price-trial">Your first month is free — try it before you pay.</p>
+        <a class="btn btn-primary btn-lg" href="https://wa.me/917892218476?text=Hi%20onlyautomation%2C%20I%27d%20like%20to%20start%20the%201-month%20free%20trial%20of%20LocalPulse" target="_blank" rel="noopener">Start your free month on WhatsApp</a>
+        <ul class="price-list">
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Posts written for your business by AI</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Your target keywords worked into every post</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Branded image with your logo &amp; colours</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Posts on the days and time you choose</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>“Learn more” button to your website</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Setup help from our team</li>
+        </ul>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>Configure from Dashboard</h3>
-        <p>Set your posting days, time, topics, and tone. The AI handles the rest — generating fresh content every single time.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Watch It Go Live</h3>
-        <p>Posts go live automatically on your schedule. Check the activity log anytime — every post is tracked and logged.</p>
+      <p class="price-note">Several locations or running an agency? <a href="https://wa.me/917892218476?text=Hi%20onlyautomation%2C%20I%20manage%20several%20business%20profiles" target="_blank" rel="noopener">Talk to us</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-soft" id="faq">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">FAQ</span>
+      <h2>Questions, answered.</h2>
+    </div>
+    <div class="faq reveal">
+      <details>
+        <summary>How much does it cost? Is there a free trial?<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <p>LocalPulse is ₹4,999 per month, and your first month is free. We set everything up, you see the posts going live on your profile, and you decide whether to continue.</p>
+      </details>
+      <details>
+        <summary>Do I need to share my Google password?<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <p>No. You add our team as a manager on your Google Business Profile. You remain the owner and can remove our access at any time from your profile settings.</p>
+      </details>
+      <details>
+        <summary>How often will you post?<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <p>On the days and at the time you choose — one post on each scheduled day. You can change the schedule whenever you want.</p>
+      </details>
+      <details>
+        <summary>What will the posts be about?<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <p>Useful updates and tips about your products and services, written from your website and industry, using the keywords you want to be found for. Topics rotate so your posts don't repeat.</p>
+      </details>
+      <details>
+        <summary>Will the images have my branding?<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <p>Yes. Each image uses your logo and colours picked from your logo, along with a headline and key points from that day's post.</p>
+      </details>
+      <details>
+        <summary>Can I check posts before they go live?<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <p>Right now posts go out automatically on your schedule. Approving each post on WhatsApp before it goes live is coming soon.</p>
+      </details>
+      <details>
+        <summary>Will this guarantee I rank first on Google?<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <p>Nobody can honestly guarantee rankings. Regular, relevant posts keep your profile active and give customers more reasons to call — which is what LocalPulse takes care of for you.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band section-soft">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>Ready to let your business grow itself?</h2>
+      <p>Try LocalPulse free for your first month. Message us on WhatsApp and we'll set it up for your Google Business Profile.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-white btn-lg" href="https://wa.me/917892218476?text=Hi%20onlyautomation%2C%20I%27m%20interested%20in%20LocalPulse%20for%20my%20business" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 3.5 11.5 8.5 8.5 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+          Chat on WhatsApp
+        </a>
+        <a class="btn btn-outline-white btn-lg" href="/tools">Explore all tools</a>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- FOOTER -->
-<footer>
-  <a href="/" class="footer-brand"><img src="/assets/logo.png" alt="onlyautomation" width="151" height="20"></a>
-  <div class="footer-links">
-    <a href="/">Home</a>
-    <a href="/tools">Tools</a>
-    <a href="/about">About Us</a>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <img src="/assets/logo.png" alt="onlyautomation" width="197" height="26">
+      <p>Automation tools that keep Indian businesses visible online. Built in Bangalore by Digital Hub 360.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="/#features">Features</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/tools">All tools</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="/about">About us</a>
+      <a href="https://digitalhub360.in" target="_blank" rel="noopener">Digital Hub 360</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="https://wa.me/917892218476?text=Hi%20onlyautomation%2C%20I%27m%20interested%20in%20LocalPulse%20for%20my%20business" target="_blank" rel="noopener">WhatsApp us</a>
+      <a href="/#faq">FAQ</a>
+    </div>
   </div>
-  <div class="footer-copy">© 2026 onlyautomation.in · Built in Bangalore 🇮🇳</div>
+  <div class="container footer-bottom">
+    <span>© 2026 onlyautomation.in</span>
+    <span>Made in Bangalore 🇮🇳</span>
+  </div>
 </footer>
 
+<script src="/assets/site.js" defer></script>
 </body>
 </html>
