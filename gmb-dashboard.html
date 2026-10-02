@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LocalPulse — GMB Dashboard · onlyautomation.in</title>
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -62,6 +63,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 .sidebar-fill { flex: 1; }
 .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); flex-shrink: 0; }
 .footer-domain { font-size: 11px; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
+.sidebar-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.logout-link { font-size: 12.5px; font-weight: 600; color: var(--text-2); text-decoration: none; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--border); }
+.logout-link:hover { color: var(--danger); border-color: rgba(220,38,38,0.3); }
+.topbar-logout { display: none; }
+@media (max-width: 640px) { .topbar-logout { display: inline-block; margin-right: 8px; } }
 
 /* MAIN */
 .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; height: 100%; }
@@ -347,6 +353,7 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
   <div class="sidebar-fill"></div>
   <div class="sidebar-footer">
     <div class="footer-domain">onlyautomation.in</div>
+    <a class="logout-link" href="/api/logout">Log out</a>
   </div>
 </aside>
 
@@ -358,7 +365,8 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
       <div class="topbar-title" id="topbarTitle">GMB Poster — Digital Hub 360</div>
       <div class="topbar-sub">Google Business Profile auto-posting bot</div>
     </div>
-    <div class="topbar-right">
+    <div class="topbar-right" style="display:flex;align-items:center">
+      <a class="logout-link topbar-logout" href="/api/logout">Log out</a>
       <div class="status-toggle active" id="statusToggle" onclick="toggleStatus()">
         <div class="pulse-dot"></div>
         <span id="statusLabel">Active</span>
@@ -1140,6 +1148,7 @@ function onLogoPicked(input) {
       try {
         const r = await fetch('/api/logo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bizId: biz.id, dataUrl }) });
         const data = await r.json().catch(() => ({}));
+        if (r.status === 401) { location.replace('/login?next=/gmb-dashboard'); return; }
         if (!r.ok || !data.ok) throw new Error(data.error || `HTTP ${r.status}`);
         biz.logoPath = data.path;
         biz.logoVersion = Date.now();
@@ -1252,6 +1261,7 @@ function applyConfig(cfg) {
 async function loadSettings() {
   try {
     const r = await fetch('/api/config');
+    if (r.status === 401) { location.replace('/login?next=/gmb-dashboard'); return; }
     if (r.ok) { const cfg = await r.json(); applyConfig(cfg); }
     else {
       const activeBiz = businesses.find(b => b.id === activeBizId);
@@ -1308,6 +1318,7 @@ async function saveSettings(successMsg) {
   };
   try {
     const r = await fetch('/api/config', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(config, (k, v) => k.startsWith('_') && k !== '_sha' ? undefined : v) });
+    if (r.status === 401) { location.replace('/login?next=/gmb-dashboard'); return false; }
     const data = await r.json();
     if (r.ok && data.ok) {
       showToast(successMsg || '✓ Saved! Bot will follow new settings on next run.', 'ok');
