@@ -12,10 +12,10 @@
 :root {
   --bg: #F5F8FF; --surface: #FFFFFF; --surface-2: #EEF3FC; --surface-3: #E3EBF8;
   --border: #DDE6F4; --border-2: #C9D6EC;
-  --accent: #0062F9; --accent-dim: rgba(0,98,249,0.08); --accent-glow: rgba(0,98,249,0.22);
+  --accent: #E8192C; --accent-dim: rgba(232,25,44,0.08); --accent-glow: rgba(232,25,44,0.22);
   --success: #0E9F6E; --success-dim: rgba(14,159,110,0.1);
   --warning: #D97706; --danger: #DC2626;
-  --text: #011333; --text-2: #4B5B78; --text-3: #8796B0;
+  --text: #001030; --text-2: #4B5B78; --text-3: #8796B0;
   color-scheme: light;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,7 +24,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 
 /* SIDEBAR */
 .sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-.brand-logo { height: 22px; width: auto; display: block; }
+.brand-logo { height: 30px; width: auto; display: block; }
 .brand { text-decoration: none; padding: 18px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 
 .nav-section { padding: 12px 10px 4px; flex-shrink: 0; }
@@ -157,7 +157,7 @@ input[type="number"].select-ctrl::-webkit-inner-spin-button { -webkit-appearance
 .save-bar { position: sticky; bottom: 0; padding: 16px 28px 20px; background: linear-gradient(to top, var(--bg) 60%, transparent); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .btn { padding: 9px 22px; border-radius: 8px; font-size: 13.5px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; border: none; transition: all 0.15s; }
 .btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: #0052D6; box-shadow: 0 0 20px var(--accent-glow); }
+.btn-primary:hover { background: #C40E24; box-shadow: 0 0 20px var(--accent-glow); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-2); }
 .btn-ghost:hover { color: var(--text); border-color: var(--text-3); }
@@ -206,7 +206,7 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
 .plan-switch { display: inline-flex; padding: 3px; border-radius: 20px; background: var(--surface-2); border: 1px solid var(--border-2); margin-right: 10px; }
 .plan-switch button { border: none; background: none; font: 600 12.5px 'Inter', sans-serif; color: var(--text-2); padding: 5px 12px; border-radius: 16px; cursor: pointer; }
 .plan-switch button.on { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(1,19,51,.12); }
-.plan-switch button[data-plan="premium"].on { background: linear-gradient(115deg, #0062F9, #1E9BFF); color: #fff; }
+.plan-switch button[data-plan="premium"].on { background: linear-gradient(115deg, #FF3341, #C8102A); color: #fff; }
 @media (max-width: 640px) { .plan-switch { margin-right: 6px; } .plan-switch button { padding: 5px 9px; } }
 
 /* PLAN */
@@ -217,8 +217,8 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
 .plan-opt:has(input:checked) { border-color: var(--accent); background: var(--accent-dim); }
 .plan-name { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
 .plan-desc { font-size: 12px; color: var(--text-2); line-height: 1.45; }
-.pro-tag { font-size: 10px; font-weight: 800; letter-spacing: .06em; padding: 2px 7px; border-radius: 6px; background: linear-gradient(115deg, #0062F9, #1E9BFF); color: #fff; }
-.biz-pro { font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 1px 5px; border-radius: 5px; background: linear-gradient(115deg, #0062F9, #1E9BFF); color: #fff; flex-shrink: 0; }
+.pro-tag { font-size: 10px; font-weight: 800; letter-spacing: .06em; padding: 2px 7px; border-radius: 6px; background: linear-gradient(115deg, #FF3341, #C8102A); color: #fff; }
+.biz-pro { font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 1px 5px; border-radius: 5px; background: linear-gradient(115deg, #FF3341, #C8102A); color: #fff; flex-shrink: 0; }
 @media (max-width: 640px) { .plan-opts { grid-template-columns: 1fr; } }
 
 /* BRAND */
@@ -333,7 +333,7 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <a class="brand" href="/" title="Go to justautomate.si home">
-    <img src="/assets/logo.png" alt="justautomate" class="brand-logo">
+    <img src="/assets/logo.png" alt="JustAutomate" class="brand-logo">
   </a>
 
   <!-- BUSINESSES -->
