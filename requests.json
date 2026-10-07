@@ -1,7 +1,8 @@
 {
   "biz_1790768944429": {
-    "status": "posting",
+    "status": "done",
     "requestedAt": "2026-10-07T10:36:06.038Z",
-    "startedAt": "2026-10-07T10:40:06.799Z"
+    "startedAt": "2026-10-07T10:40:06.799Z",
+    "finishedAt": "2026-10-07T10:41:53.536Z"
   }
 }
