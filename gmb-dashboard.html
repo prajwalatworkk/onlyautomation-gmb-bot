@@ -202,6 +202,15 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
 .kw-input { flex: 1; min-width: 200px; background: none; border: none; outline: none; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; padding: 4px; }
 .kw-input::placeholder { color: var(--text-3); }
 
+/* POST NOW */
+.postnow-btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; margin-right: 10px; border-radius: 16px; border: 1px solid var(--accent); background: var(--accent); color: #fff; font: 600 12.5px 'Inter', sans-serif; cursor: pointer; white-space: nowrap; transition: opacity .15s, transform .15s; }
+.postnow-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.postnow-btn:disabled { opacity: .55; cursor: default; }
+.postnow-status { font-size: 12px; color: var(--text-2); margin-right: 10px; max-width: 260px; text-align: right; line-height: 1.35; }
+.postnow-status.ok { color: var(--success); font-weight: 600; }
+.postnow-status.err { color: var(--danger); font-weight: 600; }
+@media (max-width: 900px) { .postnow-status { display: none; } }
+
 /* PLAN SWITCH (top bar) */
 .plan-switch { display: inline-flex; padding: 3px; border-radius: 20px; background: var(--surface-2); border: 1px solid var(--border-2); margin-right: 10px; }
 .plan-switch button { border: none; background: none; font: 600 12.5px 'Inter', sans-serif; color: var(--text-2); padding: 5px 12px; border-radius: 16px; cursor: pointer; }
@@ -316,6 +325,20 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
   </div>
 </div>
 
+<!-- POST NOW MODAL -->
+<div class="modal-overlay" id="postNowModal" onclick="if (event.target === this) closePostNow()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">Post now for <span id="postNowName"></span>?</div>
+      <div class="modal-sub">A new post will be written, designed and published on this business's Google profile within about 5 minutes, as long as your Mac is on. If it's off, the post goes out as soon as it's back on. If today is a scheduled day, this counts as today's post.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" id="postNowConfirm" onclick="confirmPostNow()">Post now</button>
+      <button class="btn btn-ghost" onclick="closePostNow()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- REMOVE BUSINESS MODAL -->
 <div class="modal-overlay" id="removeBizModal" onclick="if (event.target === this) closeRemoveModal()">
   <div class="modal-box">
@@ -391,6 +414,8 @@ textarea.field-input { resize: vertical; min-height: 58px; line-height: 1.45; }
     </div>
     <div class="topbar-right" style="display:flex;align-items:center">
       <a class="logout-link topbar-logout" href="/api/logout">Log out</a>
+      <span class="postnow-status" id="postNowStatus" role="status" aria-live="polite"></span>
+      <button class="postnow-btn" id="postNowBtn" type="button" onclick="askPostNow()">⚡ Post now</button>
       <div class="plan-switch" role="group" aria-label="Plan for this business">
         <button type="button" data-plan="standard" onclick="onPlanChange('standard')">Standard</button>
         <button type="button" data-plan="premium" onclick="onPlanChange('premium')">Premium</button>
@@ -986,6 +1011,7 @@ function switchBusiness(id) {
   renderBrand(biz);
   writeScheduleUI(biz.schedule);
   renderStats(biz);
+  renderPostNow();
   renderBizList();
 }
 
@@ -1122,6 +1148,78 @@ function renderStats(biz) {
   });
   document.getElementById('activityHint').textContent = posts.length > 5 ? `Last 5 of ${posts.length} posts` : 'Last 5 posts';
   updateNext();
+}
+
+// ── One-click posting ──
+let postNowQueue = {};
+let postNowTimer = null;
+
+async function loadPostNow() {
+  try {
+    const r = await fetch('/api/post-now');
+    if (r.status === 401) { location.replace('/login?next=/gmb-dashboard'); return; }
+    if (r.ok) postNowQueue = await r.json();
+  } catch (e) { /* keep last known state */ }
+  renderPostNow();
+}
+
+function renderPostNow() {
+  const biz = currentBiz();
+  if (!biz) return;
+  const e = postNowQueue[biz.id];
+  const btn = document.getElementById('postNowBtn');
+  const st = document.getElementById('postNowStatus');
+  const busy = e && (e.status === 'queued' || e.status === 'posting');
+  btn.disabled = !!busy;
+  btn.textContent = busy ? (e.status === 'posting' ? 'Posting…' : 'Queued…') : '⚡ Post now';
+  st.className = 'postnow-status';
+  if (busy) {
+    st.textContent = e.status === 'posting' ? 'Writing & publishing now…'
+      : `Requested ${fmtClock(new Date(e.requestedAt))} · goes out within ~5 min while your Mac is on`;
+  } else if (e && e.status === 'done' && Date.now() - new Date(e.finishedAt) < 3 * 3600e3) {
+    st.textContent = `Posted ✓ ${fmtClock(new Date(e.finishedAt))}`; st.classList.add('ok');
+  } else if (e && e.status === 'failed' && Date.now() - new Date(e.finishedAt) < 24 * 3600e3) {
+    st.textContent = 'Last try failed — click Post now to retry'; st.classList.add('err');
+    st.title = e.error || '';
+  } else {
+    st.textContent = '';
+  }
+  clearTimeout(postNowTimer);
+  if (Object.values(postNowQueue).some(x => x.status === 'queued' || x.status === 'posting')) {
+    postNowTimer = setTimeout(async () => {
+      const before = JSON.stringify(postNowQueue);
+      await loadPostNow();
+      if (JSON.stringify(postNowQueue) !== before) loadHistory();
+    }, 30000);
+  }
+}
+
+function askPostNow() {
+  const biz = currentBiz();
+  if (!biz) return;
+  document.getElementById('postNowName').textContent = biz.name;
+  document.getElementById('postNowModal').classList.add('open');
+}
+
+function closePostNow() { document.getElementById('postNowModal').classList.remove('open'); }
+
+async function confirmPostNow() {
+  const biz = currentBiz();
+  const btn = document.getElementById('postNowConfirm');
+  btn.disabled = true; btn.textContent = 'Queuing…';
+  try {
+    const r = await fetch('/api/post-now', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bizId: biz.id, status: 'queued' }) });
+    if (r.status === 401) { location.replace('/login?next=/gmb-dashboard'); return; }
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || !data.ok) throw new Error(data.error || `HTTP ${r.status}`);
+    postNowQueue[biz.id] = data.entry;
+    showToast(data.alreadyQueued ? `A post for ${biz.name} is already on its way.` : `✓ Queued — ${biz.name} will post within about 5 minutes.`, 'ok');
+  } catch (e) {
+    showToast('✗ Could not queue the post: ' + e.message, 'err');
+  }
+  btn.disabled = false; btn.textContent = 'Post now';
+  closePostNow();
+  renderPostNow();
 }
 
 async function loadHistory() {
@@ -1362,6 +1460,7 @@ async function loadSettings() {
   renderBizList();
   updateNext();
   loadHistory();
+  loadPostNow();
 }
 
 // ── Save settings ──
