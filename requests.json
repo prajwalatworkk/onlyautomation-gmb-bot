@@ -1,9 +1,6 @@
 {
   "biz_1790768944429": {
-    "status": "failed",
-    "requestedAt": "2026-10-15T12:24:01.728Z",
-    "startedAt": "2026-10-15T12:25:05.069Z",
-    "finishedAt": "2026-10-15T12:25:09.317Z",
-    "error": "<urlopen error [Errno 61] Connection refused>"
+    "status": "queued",
+    "requestedAt": "2026-10-19T11:50:19.401Z"
   }
 }
