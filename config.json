@@ -24,7 +24,7 @@
   "whatsappApproval": false,
   "includeImage": true,
   "learnMore": true,
-  "websiteUrl": "https://www.xcellentchairs.com/",
+  "websiteUrl": "https://www.xcellentchairs.in/",
   "businesses": [
     {
       "id": "dh360",
@@ -144,7 +144,7 @@
     {
       "id": "biz_1790768944429",
       "name": "Xcellent Seating Systems",
-      "websiteUrl": "https://www.xcellentchairs.com/",
+      "websiteUrl": "https://www.xcellentchairs.in/",
       "category": "Office Furniture & Seating",
       "topics": [
         {
@@ -242,5 +242,5 @@
     }
   ],
   "activeBusiness": "biz_1790768944429",
-  "updatedAt": "2026-09-30T12:25:02.717Z"
+  "updatedAt": "2026-10-19T12:05:48.281Z"
 }
