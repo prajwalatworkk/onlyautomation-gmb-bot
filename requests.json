@@ -1,8 +1,9 @@
 {
   "biz_1790768944429": {
-    "status": "posting",
+    "status": "done",
     "requestedAt": "2026-11-13T08:49:07.604Z",
-    "startedAt": "2026-11-13T14:05:52.708Z"
+    "startedAt": "2026-11-13T14:05:52.708Z",
+    "finishedAt": "2026-11-13T14:08:15.208Z"
   },
   "dh360": {
     "status": "done",
