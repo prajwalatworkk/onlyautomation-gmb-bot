@@ -1,7 +1,8 @@
 {
   "biz_1790768944429": {
-    "status": "queued",
-    "requestedAt": "2026-11-13T08:49:07.604Z"
+    "status": "posting",
+    "requestedAt": "2026-11-13T08:49:07.604Z",
+    "startedAt": "2026-11-13T14:05:52.708Z"
   },
   "dh360": {
     "status": "done",
